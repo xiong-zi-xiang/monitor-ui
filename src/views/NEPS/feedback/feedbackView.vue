@@ -7,7 +7,7 @@
           :space="200"
           class="mb-4"
           simple
-          style="max-width: 600px;margin: auto"
+          style="max-width: 1000px;margin: auto"
       >
         <el-step :icon="Edit" title="选择网格"/>
         <el-step :icon="Upload" title="上报AQI"/>

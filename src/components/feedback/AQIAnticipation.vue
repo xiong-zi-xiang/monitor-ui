@@ -49,7 +49,7 @@ const nextStep = () => {
   AQIRef.value.validate((valid) => {
     if (valid) {
       store["active"]++
-      router.push('/NEPS/feedback/step3')
+      router.push({name:'feedbackStep3'})
     } else {
       ElMessage({
         message: '请输入正确的格式',
@@ -60,7 +60,7 @@ const nextStep = () => {
 }
 const previousStep = () => {
   store["active"]--
-  router.push('/NEPS/feedback/step1')
+  router.push({name:'feedbackStep1'})
 }
 
 // 选择

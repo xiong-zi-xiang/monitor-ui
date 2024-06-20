@@ -18,9 +18,9 @@ const template = {
     "afDate": "@date", // 随机日期
     "afTime": "@time", // 随机时间
     "gmId": null,
-    "gmName": "",
-    "assignDate": null,
-    "assignTime": null,
+    "gmName": null,
+    "assignDate": "@date",
+    "assignTime": "@time",
     "state": "@integer(0,2)",
     "remarks": "@csentence(3, 10)" // 随机中文句子，3到10个字
 };

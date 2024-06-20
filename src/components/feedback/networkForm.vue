@@ -60,7 +60,7 @@ const nextStep = () => {
   formRef.value.validate((valid) => {
     if (valid) {
       store["active"]++
-      router.push('/NEPS/feedback/step2')
+      router.push({name:'feedbackStep2'})
     } else {
       ElMessage({
         message: '请输入正确的格式',

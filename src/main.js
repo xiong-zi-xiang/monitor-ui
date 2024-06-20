@@ -5,6 +5,8 @@ import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// 导入tailwindcss
+import './assets/tailwind.css'; // 引入Tailwind CSS
 // 导入plus-pro-components 及其样式
 import PlusProComponents from 'plus-pro-components'
 import 'plus-pro-components/index.css'

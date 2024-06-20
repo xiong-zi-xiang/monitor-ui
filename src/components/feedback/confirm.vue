@@ -14,7 +14,7 @@
           所在省
         </div>
       </template>
-      <el-tag size="large">{{ AQIStore.city[0] }}</el-tag>
+      <el-tag size="large" type="success">{{ AQIStore.city[0] }}</el-tag>
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label>
@@ -25,7 +25,7 @@
           所在市
         </div>
       </template>
-      <el-tag size="large">{{ AQIStore.city[1] }}</el-tag>
+      <el-tag size="large" type="success">{{ AQIStore.city[1] }}</el-tag>
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label>
@@ -36,7 +36,7 @@
           所在区
         </div>
       </template>
-      <el-tag size="large">{{ AQIStore.city[2] }}</el-tag>
+      <el-tag size="large" type="success">{{ AQIStore.city[2] }}</el-tag>
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label>
@@ -47,7 +47,7 @@
           具体地址
         </div>
       </template>
-      <el-tag size="large">{{ AQIStore.detail }}</el-tag>
+      <el-tag size="large" type="success">{{ AQIStore.detail }}</el-tag>
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label>
@@ -58,7 +58,7 @@
           空气质量等级
         </div>
       </template>
-      {{ AQIStore.level }}
+       {{ AQIStore.level }}
       <el-tag size="large" :color="AQIStore.color" id="tag"></el-tag>
     </el-descriptions-item>
     <el-descriptions-item>
@@ -104,8 +104,7 @@ const nextStep = () =>{
         cancelButtonText: '再次查看',
         type: 'warning',
       }
-  )
-      .then(() => {
+  ).then(() => {
         // 包装提交数据
         const AQIForm = {
           telId: userStore.user.tel,
@@ -125,7 +124,7 @@ const nextStep = () =>{
           })
           // 重置 pinia 状态
           AQIStore.$reset()
-          router.push('/NEPS/home')
+          router.push({name:'home'})
         }).catch(error=>{
           console.log("出现错误")
           ElMessage({
@@ -133,19 +132,16 @@ const nextStep = () =>{
             message: error,
           })
         })
-      })
-      .catch(() => {
+      }).catch(() => {
         ElMessage({
           type: 'warning',
           message: '取消确认',
         })
       })
-  AQIStore['active']++;
-  router.push('/NEPS/feedback/step3')
 }
 const previousStep = () =>{
   AQIStore['active']--;
-  router.push('/NEPS/feedback/step2')
+  router.push({name:'feedbackStep2'})
 }
 
 </script>

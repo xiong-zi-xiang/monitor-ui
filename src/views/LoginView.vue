@@ -164,7 +164,7 @@ const accountLogin = () => {
         state.user.tel = response.data.data.member.tel
       })
       console.log(userStore.$state.user.tel)
-      router.push('/NEPS')
+      router.push('/')
       ElNotification({
         title: '成功',
         message: '登陆成功',
