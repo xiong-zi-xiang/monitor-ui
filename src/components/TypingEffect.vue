@@ -1,10 +1,9 @@
 <template>
-  <div class="typing-effect">
-    <span v-for="(char, index) in displayedText" :key="index">
+    <span v-for="(char, index) in displayedText" :key="index" class="typing-effect">
       <span v-if="char === '\n'"><br/></span>
       <span v-else>{{ char }}</span>
     </span>
-  </div>
+
 </template>
 
 <script>
@@ -65,5 +64,6 @@ export default {
 .typing-effect {
   font-family: 'Courier New', Courier, monospace;
   white-space: pre-wrap; /* Preserve whitespace and handle line breaks */
+
 }
 </style>

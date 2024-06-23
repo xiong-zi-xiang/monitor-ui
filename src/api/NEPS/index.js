@@ -4,7 +4,7 @@ import baseURL from "@/backendAPI.js";
 // 上报AQI
 export function submitAQI(AQIForm) {
     return axiosInstance.post(
-        baseURL + '/feedback/receiveFeedBack',
+        baseURL + '/api/v1/feedbacks',
         {
             telId: AQIForm.telId,
             provinceName: AQIForm.provinceName,
@@ -16,7 +16,7 @@ export function submitAQI(AQIForm) {
             remarks: AQIForm.remarks,
         },
         {
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             }
         }
@@ -24,15 +24,15 @@ export function submitAQI(AQIForm) {
 }
 
 // 查询历史上报记录
-export function selectHistory(page,size){
+export function selectHistory(page, size) {
     return axiosInstance.get(
-        baseURL + '/feedback/getFeedbackByTelId',{
-            params:{
-                page,size // page 和 size 都是number类型
+        baseURL + '/feedback/getFeedbackByTelId', {
+            params: {
+                page, size // page 和 size 都是number类型
             }
         },
         {
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             }
         }

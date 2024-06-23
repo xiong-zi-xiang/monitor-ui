@@ -82,20 +82,32 @@
                 <el-tag class="mb-4 mr-4 ml-3" size="large" type="success"> Neusoft 环保公众监督系统</el-tag>
                 <span class="mr-2  font-semibold"> 环保新视野， </span>
                 <span class="font-semibold">Neusoft与您同行</span>
-
               </div>
             </template>
             <template #extra>
               <div class="flex items-center">
                 <el-avatar
                     :size="42"
-                    :src="`${sourceFile}avatar/avatar${avatarNum}.svg`"
+                    :src="userStore.user.avatar"
                     class="mb-3 bg-white"
                 />
-
                 <span class="text-large font-600 mr-3 font-semibold ml-4 mb-2"> {{ userStore.user.mname }} </span>
-                <!--                <span class=" mr-2" style="color: var(&#45;&#45;el-text-color-regular)">欢迎登录</span>-->
                 <el-tag class="mb-2" size="large" type="primary">管理员</el-tag>
+                <el-dropdown class="el-dropdown-link ml-4 mb-2" @command="handleCommand">
+                  <span class="el-dropdown-link outline-0">
+                    <span class="icon-[svg-spinners--blocks-scale] "></span>
+                    设置
+                  <el-icon class="el-icon--right">
+                    <arrow-down/>
+                  </el-icon>
+                    </span>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item command="a">修改密码</el-dropdown-item>
+                      <el-dropdown-item command="b">退出登录</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
               </div>
             </template>
           </el-page-header>
@@ -110,6 +122,36 @@
       </el-container>
     </el-container>
   </div>
+  <el-dialog v-model="dialogFormVisible" style=" border-radius: 14px;box-shadow: rgba(0, 0, 0, 0.5) "
+             title="修改您的密码"
+             width="500">
+    <el-form :model="passwordForm" :rules="rule" class="w-80 mx-auto" label-width="80px">
+      <el-form-item label="新密码" prop="newPassword">
+        <el-input v-model="passwordForm.newPassword" show-password></el-input>
+      </el-form-item>
+      <el-form-item label="确实密码" prop="newPassword">
+        <el-input v-model="passwordForm.confirmPassword" show-password></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="w-40 mx-auto">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-popconfirm
+            :icon="InfoFilled"
+            cancel-button-text="不"
+            confirm-button-text="是的"
+            icon-color="#626AEF"
+            title="确认要修改吗？"
+            @cancel="cancelEvent"
+            @confirm="handleSubmit"
+        >
+          <template #reference>
+            <el-button type="primary">确认修改</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -118,11 +160,13 @@ import {onMounted, ref} from 'vue'
 import {useAQIStore} from "@/stores/AQI.js";
 import {useNavStore} from "@/stores/nav.js";
 import {useUserStore} from "@/stores/user.js";
+import {useRouter} from "vue-router";
+import {ElMessage, ElNotification} from "element-plus";
 
 const AQIStore = useAQIStore()
 const navStore = useNavStore();
 const userStore = useUserStore();
-
+const router = useRouter()
 const activeIndex = ref("1")
 const isCollapse = ref(false)
 const handleOpen = (key, keyPath) => {
@@ -131,28 +175,75 @@ const handleOpen = (key, keyPath) => {
 const handleClose = (key, keyPath) => {
   console.log(key, keyPath)
 }
-
 const handleCollapse = () => {
   isCollapse.value = !isCollapse.value
-  console.log(isCollapse.value)
 }
 const handleSelect = (key, path) => {
   navStore.activeNav = key
 }
 
-// Avatar存放文件夹
-const sourceFile = 'src/assets/'
-//  设置随机Avatar
-const avatarNum = ref(1);
-onMounted(() => {
-  // 设置随机头像
-  avatarNum.value = Math.floor(Math.random() * 6 + 1)
-
-
+// 校验rule
+const rule = ref({
+  newPassword: [
+    {required: true, message: '新密码不能为空', trigger: 'blur'},
+  ],
+  confirmPassword: [
+    {required: true, message: '确认密码', trigger: 'blur'}
+  ],
 })
+// 对话框
+const dialogFormVisible = ref(false)
+// 密码form
+const passwordForm = ref({
+  newPassword: '',
+  confirmPassword: '',
+})
+// 处理退出系统 和修改密码
+const handleCommand = (command) => {
+  if (command === 'a') {
+    dialogFormVisible.value = true;
+  }
+  if (command === 'b') {
+    console.log("sda")
+    // 退出登录
+    userStore.$reset()
+    AQIStore.$reset()
+    navStore.$reset()
+    router.push({name: "login"})
+    // 显示提示
+    ElNotification({
+      title: '提示',
+      message: '退出成功',
+      type: "success"
+    })
+  }
+}
+// 处理修改
+
+import {InfoFilled} from '@element-plus/icons-vue'
+
+const handleSubmit = () => {
+  // 判断是否相等
+  if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+    ElMessage({
+      type: "error",
+      message: '两次输入的密码不一致,请重新输入'
+    })
+  } else {
+    ElNotification({
+      type: "success",
+      message: "成功修改密码",
+      title: "成功"
+    })
+    dialogFormVisible.value = false
+  }
+}
+const cancelEvent = () => {
+
+}
 </script>
 
-<style>
+<style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
@@ -166,5 +257,10 @@ onMounted(() => {
   text-decoration: none;
 }
 
-
+.example-showcase .el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
+}
 </style>

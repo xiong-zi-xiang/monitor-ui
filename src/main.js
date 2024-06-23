@@ -1,5 +1,5 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import {createApp} from 'vue'
+import {createPinia} from 'pinia'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import App from './App.vue'
@@ -17,9 +17,6 @@ if (process.env.NODE_ENV === 'development') {
     import('@/mock/NEPS/feedback.js')
     import('@/mock/NEPS/feedbackHistory.js')
 }
-import('@/mock/login.js'); // 异步引入 Mock 数据
-import('@/mock/NEPS/feedback.js')
-import('@/mock/NEPS/feedbackHistory.js')
 const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPersist)

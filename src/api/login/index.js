@@ -1,31 +1,44 @@
 import axiosInstance from "@/axios.js";
 import baseURL from "@/backendAPI.js";
+
 // 账号登录
-export function idLogin(logId,logPwd) {
+export function idLogin(logId, logPwd) {
     return axiosInstance.post(
-        baseURL + '/auth/login',
+        baseURL + '/api/v1/auth/login',
         {
             logId,
             logPwd
         },
         {
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             }
         }
-        )
+    )
 }
 
-// 密码登录
-export function smsLogin(mobile,smsCode) {
+// sms登录
+export function getVerifyCode() {
     return axiosInstance.post(
-        baseURL,
+        baseURL + '/api/v1/code/sms',
+        {},
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    )
+}
+
+export function smsLogin(mobile, smsCode) {
+    return axiosInstance.post(
+        baseURL + '/api/v1/auth/login/mobile',
         {
             mobile,
             smsCode
         },
         {
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             }
         }
