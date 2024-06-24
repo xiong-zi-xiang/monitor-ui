@@ -13,11 +13,19 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     function (config) {
         // 在发送请求之前做些什么
-        const userStore = useUserStore()
-        console.log('jwt', userStore.jwt)
-        if (userStore.jwt !== '') {
-            config.headers.Authorization = userStore.jwt
-            // console.log(config)
+
+        console.log(config.url)
+        // 对需要加token 不在白名单中的请求路径，加入token
+        if (!isExcludedUrl(config.url)) {
+            console.log("加token")
+            const userStore = useUserStore()
+            console.log('jwt', userStore.jwt)
+            if (userStore.jwt !== '') {
+                config.headers.Authorization = userStore.jwt
+                // console.log(config)
+            }
+        } else {
+            console.log("不加token")
         }
         return config
     },
@@ -38,4 +46,21 @@ axiosInstance.interceptors.request.use(
 //         return Promise.reject(error)
 //     }
 // );
+
+
+// 这里列出不需要处理的 URL
+const excludedUrls = [
+    '/api/v1/auth/login', // 账号登录
+    '/api/v1/code/sms', // 获取验证码
+    '/api/v1/auth/login/mobile',//手机登录
+    '/api/v1/auth/public/register',
+    //注册
+    // 可以根据需要添加更多的 URL
+];
+
+// 查找是否是不需要加入token的URL
+function isExcludedUrl(url) {
+    return excludedUrls.some(excludedUrl => url.endsWith(excludedUrl));
+}
+
 export default axiosInstance;

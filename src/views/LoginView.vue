@@ -140,7 +140,7 @@
             <span class="text-3xl text-left block font-bold">Welcome Back :)</span>
             <span class="text-base block text-left mt-2 font-thin">为登录系统，请在下面输入您的相关信息</span>
             <el-menu
-                :default-active="activeIndex"
+                :default-active="navStore.activeLoginNav"
                 class="flex justify-center mt-5 mb-4"
                 mode="horizontal"
                 @select="changeLogin"
@@ -153,6 +153,11 @@
               <router-link :to="{name:'smsLogin'}">
                 <el-menu-item index="2">
                   手机登录
+                </el-menu-item>
+              </router-link>
+              <router-link :to="{name:'enroll'}">
+                <el-menu-item index="3">
+                  注册账号
                 </el-menu-item>
               </router-link>
             </el-menu>
@@ -188,13 +193,11 @@
 
       </div>
     </div>
-    <div class="section section3" style="background-image: url('/protruding-squares.svg')"><span style="color:#ffffff">关于我们</span>
-    </div>
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, onBeforeUnmount} from 'vue';
 import TypingEffect from "@/components/TypingEffect.vue";
 import {idLogin, smsLogin} from "@/api/login/index.js";
 import fullpage from 'fullpage.js';
@@ -214,6 +217,7 @@ import {Pagination, Navigation} from 'swiper/modules';
 import {useRouter} from 'vue-router'
 import {useUserStore} from "@/stores/user.js";
 import {Avatar} from "@element-plus/icons-vue";
+import {useNavStore} from "@/stores/nav.js";
 
 const url = '/illusion3.svg'
 const modules = ref([Pagination, Navigation])
@@ -227,9 +231,10 @@ const section1Text = ref("Neusoft\n环保公众监督系统");
 const router = useRouter()
 const userStore = useUserStore()
 
-
+const navStore = useNavStore()
 // 变换登录方式
-const changeLogin = () => {
+const changeLogin = (key, path) => {
+  navStore.activeLoginNav = key
 }
 const accountLoginForm = ref({
   account: '',
@@ -258,15 +263,22 @@ const phoneLoginRules = {
     {len: 6, message: '验证码长度应为6位', trigger: 'blur'}
   ]
 }
-
+const fullPageInstance = ref(null);
 onMounted(() => {
-  new fullpage('#fullpage', {
+  fullPageInstance.value = new fullpage('#fullpage', {
     autoScrolling: true,
     navigation: true,
     anchors: ['firstPage', 'secondPage', 'thirdPage'],
     licenseKey: 'gplv3-license'
   });
 });
+
+onBeforeUnmount(() => {
+  // 在组件销毁前销毁 fullPage 实例
+  if (fullPageInstance.value) {
+    fullPageInstance.value.destroy('all');
+  }
+})
 //账户登录方法
 const accountLogin = () => {
   idLogin(accountLoginForm.value.account, accountLoginForm.value.password).then(response => {
@@ -362,13 +374,6 @@ const activeIndex = ref('1');
   justify-content: center;
   align-items: center;
 }
-
-/*.section {*/
-/*  text-align: center;*/
-/*  display: flex;*/
-/*  justify-content: center;*/
-/*  align-items: center;*/
-/*}*/
 
 
 .section2 {

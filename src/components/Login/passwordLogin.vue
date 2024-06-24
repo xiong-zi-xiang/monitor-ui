@@ -29,9 +29,8 @@
       </div>
       <div class="flex mt-6">
         <el-button class="mr-3" round size="large" type="primary" @click="accountLogin">现在登录</el-button>
-        <el-button round size="large">注册账号</el-button>
+        <el-button round size="large" @click="enroll">注册账号</el-button>
       </div>
-      <!--      <button @click="testToken">aaaaa</button>-->
     </template>
   </el-card>
 </template>
@@ -39,11 +38,14 @@
 <script setup>
 import {ref} from 'vue'
 import {Avatar} from "@element-plus/icons-vue";
-import {idLogin} from "@/api/login/index.js";
+import {getUserInfo, idLogin} from "@/api/login/index.js";
 import {ElNotification} from "element-plus";
 import {useUserStore} from "@/stores/user.js";
 import axiosInstance from "@/axios.js";
 import baseURL from "@/backendAPI.js";
+import router from "@/router/index.js";
+import {useNavStore} from "@/stores/nav.js";
+import {setUserInfo} from "@/utils/user.js";
 //是否记住
 const remember = ref(false);
 const rememberMe = () => {
@@ -65,6 +67,11 @@ const accountLoginRules = {
   ]
 }
 const userStore = useUserStore()
+const enroll = () => {
+  const navStore = useNavStore()
+  navStore.activeLoginNav = '3'
+  router.push({name: 'enroll'})
+}
 // 登录方法
 const accountLogin = () => {
   console.log(accountLoginForm.value)
@@ -74,10 +81,27 @@ const accountLogin = () => {
     if (res.data.statusCode === 200) {
       // 得到jwt 放入store中
       userStore.jwt = res.data.data
-      ElNotification({
-        title: '成功',
-        message: '登录成功',
-        type: 'success',
+      // 进一步获取用户信息存储在store中
+      getUserInfo().then(res => {
+        //设置用户信息 到store中
+        setUserInfo(res.data.data)
+        //设置avatar
+        // 随机数
+        const num = Math.floor(Math.random() * (6)) + 1
+        userStore.user.avatar = 'src/assets/avatar/avatar' + num + '.svg'
+        //路由跳转
+        router.push({name: 'home'})
+        ElNotification({
+          title: '成功',
+          message: '登录成功',
+          type: 'success',
+        })
+      }).catch(err => {
+        ElNotification({
+          title: '错误',
+          message: err,
+          type: 'error',
+        })
       })
     } else {
       ElNotification({
@@ -87,12 +111,14 @@ const accountLogin = () => {
       })
     }
   }).catch(err => {
-
+    ElNotification({
+      title: '错误',
+      message: err.data.message,
+      type: 'error',
+    })
   })
 }
-const testToken = () => {
-  axiosInstance.get(baseURL + '/test', {})
-}
+
 </script>
 
 <style scoped>

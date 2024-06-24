@@ -1,9 +1,9 @@
 <template>
   <el-card style="box-shadow: none;border: none">
     <template #default>
-      <el-form ref="phoneLoginFormRef" :model="phoneLoginForm" :rules="phoneLoginRules">
+      <el-form ref="phoneEnrollFormRef" :model="phoneEnrollForm" :rules="phoneEnrollRules">
         <el-form-item class="w-96" prop="phoneNumber" size="large">
-          <el-input v-model="phoneLoginForm.phoneNumber" clearable placeholder="请输入手机号">
+          <el-input v-model="phoneEnrollForm.phoneNumber" clearable placeholder="请输入手机号">
             <template #prefix>
               <span class="icon-[material-symbols--phone-android-outline-rounded]"></span>
             </template>
@@ -11,7 +11,7 @@
         </el-form-item>
         <el-form-item class="w-96" prop="verifyCode" size="large">
           <div class="flex">
-            <el-input v-model="phoneLoginForm.verifyCode" class="w-72" placeholder="请输入验证码" style="width: 255px">
+            <el-input v-model="phoneEnrollForm.verifyCode" class="w-72" placeholder="请输入验证码" style="width: 255px">
               <template #prefix>
                 <span class="icon-[hugeicons--bookmark-check-02]"></span>
               </template>
@@ -26,31 +26,32 @@
         </el-form-item>
       </el-form>
       <div class="flex">
-        <el-check-tag :checked='remember' round size="large" @change="rememberMe">
+        <el-check-tag :checked='allow' round size="large" @change="allow = !allow">
             <span
-                class="icon-[material-symbols--check-circle-outline] size-4  align-text-bottom mr-1"></span><span>记住我</span>
+                class="icon-[material-symbols--check-circle-outline] size-4  align-text-bottom mr-1"></span><span>已阅读并同意</span>
         </el-check-tag>
+        <el-link class="ml-2">用户条款</el-link>
         <div class="flex-1"/>
         <el-link>
           忘记密码？
         </el-link>
       </div>
       <div class="flex mt-6">
-        <el-button class="mr-3" round size="large" type="primary" @click="phoneLogin">现在登录</el-button>
-        <el-button round size="large" @click='enroll'>注册账号</el-button>
+        <el-button round size="large" @click="phoneEnroll">注册账号</el-button>
       </div>
     </template>
   </el-card>
 </template>
+
 <script setup>
-import {ref} from 'vue'
+import {ref} from "vue";
+import {getVerifyCode, smsLogin} from "@/api/login/index.js";
 import {ElMessage, ElNotification} from "element-plus";
-import {getUserInfo, getVerifyCode, smsLogin} from "@/api/login/index.js";
 import {useUserStore} from "@/stores/user.js";
-import {useNavStore} from "@/stores/nav.js";
+import {enroll,} from "@/api/enroll/index.js";
 import router from "@/router/index.js";
-import {setUserInfo} from "@/utils/user.js";
-// 验证码
+import {useNavStore} from "@/stores/nav.js";
+
 let timer = null;
 const loading = ref(false);
 const countdown = ref(0);
@@ -64,12 +65,12 @@ const startCountdown = () => {
   }, 1000);
 };
 
-const phoneLoginForm = ref({
+const phoneEnrollForm = ref({
   phoneNumber: '',
   verifyCode: '',
 })
-const phoneLoginFormRef = ref(null)
-const phoneLoginRules = {
+const phoneEnrollFormRef = ref(null)
+const phoneEnrollRules = {
   phoneNumber: [
     {required: true, message: '请输入手机号', trigger: 'blur'},
     {pattern: /^1[3-9]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur'}
@@ -78,20 +79,13 @@ const phoneLoginRules = {
     {len: 6, message: '验证码长度应为6位', trigger: 'blur'}
   ]
 }
-// 注册跳转
-const enroll = () => {
-  const navStore = useNavStore()
-  navStore.activeLoginNav = '3'
-  router.push({name: 'enroll'})
-}
 // 获取验证码
 const getCode = async () => {
-  phoneLoginFormRef.value.validateField('phoneNumber', async (valid) => {
+  phoneEnrollFormRef.value.validateField('phoneNumber', async (valid) => {
     if (valid) {
       loading.value = true;
       // 发送请求
       getVerifyCode().then(res => {
-        console.log(res)
         startCountdown()
         if (res.status === 200) {
           ElNotification({
@@ -109,38 +103,24 @@ const getCode = async () => {
     }
   });
 };
-// 登录
-//手机登录方法
-const phoneLogin = () => {
-  console.log(phoneLoginForm.value)
-  smsLogin(phoneLoginForm.value.phoneNumber, phoneLoginForm.value.verifyCode)
+
+//手机注册方法
+const phoneEnroll = () => {
+  console.log(phoneEnrollForm.value)
+  enroll(phoneEnrollForm.value.phoneNumber, phoneEnrollForm.value.verifyCode)
       .then((res) => {
-            // console.log(res)
+            console.log(res)
             if (res.data.statusCode === 200) {
-              // 得到jwt 放入store中
-              const userStore = useUserStore();
-              userStore.jwt = res.data.data
-              // 进一步获取用户信息存储在store中
-              getUserInfo().then(res => {
-                //设置用户信息 到store中
-                setUserInfo(res.data.data)
-                //设置avatar
-                const num = Math.floor(Math.random() * (6)) + 1
-                userStore.user.avatar = 'src/assets/avatar/avatar' + num + '.svg'
-                //路由跳转
-                router.push({name: 'home'})
-                ElNotification({
-                  title: '成功',
-                  message: '登录成功',
-                  type: 'success',
-                })
-              }).catch(err => {
-                ElNotification({
-                  title: '错误',
-                  message: err,
-                  type: 'error',
-                })
+              ElNotification({
+                title: '成功',
+                message: '注册成功',
+                type: 'success',
               })
+              //active index
+              const navStore = useNavStore()
+              navStore.activeLoginNav = '1'
+              // 路由跳转
+              router.push({name: 'passwordLogin'})
             } else {
               ElNotification({
                 title: '错误',
@@ -158,14 +138,13 @@ const phoneLogin = () => {
         })
       })
 }
-const remember = ref(false)
-const rememberMe = () => {
-  remember.value = !remember.value
-}
 
-</script>
-<style scoped>
-.el-card {
-  font-size: 20px;
+const allow = ref(false)
+const allowClause = () => {
+  allow.value = !allow.value
 }
+</script>
+
+<style scoped>
+
 </style>

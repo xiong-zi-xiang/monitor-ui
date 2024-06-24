@@ -31,7 +31,7 @@
         <el-form-item label="角色:">
           <el-tag class="ml-4 w-40" size="large">
             <!--            之后调用字典方法返回字符串-->
-            {{ userStore.user.roleid }}
+            <!--            {{ userStore.user.roleid }}-->
           </el-tag>
         </el-form-item>
         <el-form-item label="当前状态:">

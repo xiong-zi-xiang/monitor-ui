@@ -86,10 +86,16 @@
             </template>
             <template #extra>
               <div class="flex items-center">
+                <el-alert v-if="userStore.user.isNew === 1"
+                          style="position: absolute;top: 14px;left: 60%;width: 300px"
+                          title="您是新用户，请及时设置个人信息"
+                          type="error"
+                />
                 <el-avatar
                     :size="42"
                     :src="userStore.user.avatar"
                     class="mb-3 bg-white"
+
                 />
                 <span class="text-large font-600 mr-3 font-semibold ml-4 mb-2"> {{ userStore.user.mname }} </span>
                 <el-tag class="mb-2" size="large" type="primary">管理员</el-tag>
@@ -163,12 +169,16 @@ import {useUserStore} from "@/stores/user.js";
 import {useRouter} from "vue-router";
 import {ElMessage, ElNotification} from "element-plus";
 
+
 const AQIStore = useAQIStore()
 const navStore = useNavStore();
 const userStore = useUserStore();
 const router = useRouter()
 const activeIndex = ref("1")
 const isCollapse = ref(false)
+onMounted(() => {
+  console.log(userStore.$state)
+})
 const handleOpen = (key, keyPath) => {
   console.log(key, keyPath)
 }
@@ -181,7 +191,9 @@ const handleCollapse = () => {
 const handleSelect = (key, path) => {
   navStore.activeNav = key
 }
-
+onMounted(() => {
+  // userStore.
+})
 // 校验rule
 const rule = ref({
   newPassword: [
@@ -204,12 +216,12 @@ const handleCommand = (command) => {
     dialogFormVisible.value = true;
   }
   if (command === 'b') {
-    console.log("sda")
     // 退出登录
     userStore.$reset()
     AQIStore.$reset()
     navStore.$reset()
-    router.push({name: "login"})
+    // router.push({name: "passwordLogin"})
+    router.push('/login/passwordLogin#firstPage')
     // 显示提示
     ElNotification({
       title: '提示',
