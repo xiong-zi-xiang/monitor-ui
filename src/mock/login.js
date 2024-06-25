@@ -57,14 +57,14 @@ Mock.mock(baseURL + '/api/v1/members/info', 'get', {
             "tel": /1[3456789]\d{9}/,
             'gender|1': ['男', '女'], // 随机生成男或女
             'birthday': '@date("yyyy-MM-dd")', // 随机生成日期
-            'state|1': [0, 1, 2], // 随机生成 0 或 1 2
+            'state|1': [0, 1], // 随机生成 0 或 1 0没有权限 1是正常
             'isNew|1': [0, 1] // 随机生成 0 或 1
         },
         "roles|1-3": [
             {
                 "id|+1": 1,
-                "mname": "@word",
-                "enable|1": [0, 1], // 1是启用s
+                "mname": '@pick(["公众监督员", "网格员", "系统管理员" ])',
+                "enable|1": [0, 1], // 1是启用
                 "remark": "@cparagraph"
             }
         ],
@@ -73,33 +73,17 @@ Mock.mock(baseURL + '/api/v1/members/info', 'get', {
     }
 })
 
-//得到用户的 信息
-// const data = Mock.mock({
-//     "statusCode": 200,
-//     "message": "获取用户信息成功",
-//     "data": {
-//         "member": {
-//             "id": 2,
-//             "mname": "李华",
-//             "logid": "lihua123",
-//             "tel": "12347236646",
-//             "gender": "女",
-//             "birthday": "2003-02-13",
-//             "state": 1,
-//             "isNew": 1
-//         },
-//         "roles|1-3": [
-//             {
-//                 "id|+1": 1,
-//                 "mname": "@word",
-//                 "enable|1": [0, 1],
-//                 "remark": "@cparagraph"
-//             }
-//         ],
-//         "permissions|1-5": [
-//             "@cword(4, 8)"
-//         ]
-//     }
-// });
+
+Mock.mock(baseURL + '/api/v1/auth/password/change', 'post', {
+    'statusCode': 200,
+    message: '成功',
+    data: {}
+})
+
+Mock.mock(baseURL + '/api/v1/members', 'put', {
+    'statusCode': 200,
+    message: '成功',
+    data: {}
+})
 
 

@@ -87,18 +87,20 @@
             <template #extra>
               <div class="flex items-center">
                 <el-alert v-if="userStore.user.isNew === 1"
-                          style="position: absolute;top: 14px;left: 60%;width: 300px"
+                          style="position: absolute;top: 14px;left: 52%;width: 270px"
                           title="您是新用户，请及时设置个人信息"
-                          type="error"
+                          type="success"
                 />
                 <el-avatar
                     :size="42"
-                    :src="userStore.user.avatar"
+                    :src="userStore.avatar"
                     class="mb-3 bg-white"
 
                 />
                 <span class="text-large font-600 mr-3 font-semibold ml-4 mb-2"> {{ userStore.user.mname }} </span>
-                <el-tag class="mb-2" size="large" type="primary">管理员</el-tag>
+                <el-tag v-for="item in  userStore.roles " class="ml-4" size="large">
+                  {{ item.mname }}
+                </el-tag>
                 <el-dropdown class="el-dropdown-link ml-4 mb-2" @command="handleCommand">
                   <span class="el-dropdown-link outline-0">
                     <span class="icon-[svg-spinners--blocks-scale] "></span>
@@ -177,7 +179,7 @@ const router = useRouter()
 const activeIndex = ref("1")
 const isCollapse = ref(false)
 onMounted(() => {
-  console.log(userStore.$state)
+
 })
 const handleOpen = (key, keyPath) => {
   console.log(key, keyPath)
@@ -191,9 +193,7 @@ const handleCollapse = () => {
 const handleSelect = (key, path) => {
   navStore.activeNav = key
 }
-onMounted(() => {
-  // userStore.
-})
+
 // 校验rule
 const rule = ref({
   newPassword: [
@@ -233,21 +233,27 @@ const handleCommand = (command) => {
 // 处理修改
 
 import {InfoFilled} from '@element-plus/icons-vue'
+import {changePassword} from "@/api/info/index.js";
+import {error, success} from "@/utils/user.js";
 
 const handleSubmit = () => {
   // 判断是否相等
   if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
-    ElMessage({
-      type: "error",
-      message: '两次输入的密码不一致,请重新输入'
-    })
+    error('两次输入的密码不一致，请重新输入')
   } else {
-    ElNotification({
-      type: "success",
-      message: "成功修改密码",
-      title: "成功"
+    // 密码一致时发送请求
+    console.log(passwordForm.value.newPassword)
+    changePassword(passwordForm.value.newPassword).then(res => {
+      // 成功
+      if (res.data.statusCode === 200) {
+        success("修改成功")
+        dialogFormVisible.value = false
+      } else {
+        error(res.data.message)
+      }
+    }).catch(err => {
+      error(err)
     })
-    dialogFormVisible.value = false
   }
 }
 const cancelEvent = () => {

@@ -45,7 +45,6 @@ import axiosInstance from "@/axios.js";
 import baseURL from "@/backendAPI.js";
 import router from "@/router/index.js";
 import {useNavStore} from "@/stores/nav.js";
-import {setUserInfo} from "@/utils/user.js";
 //是否记住
 const remember = ref(false);
 const rememberMe = () => {
@@ -66,7 +65,8 @@ const accountLoginRules = {
     {required: true, message: '请输入密码', trigger: 'blur'}
   ]
 }
-const userStore = useUserStore()
+// 解构出来
+const {$state, SET_AVATAR, SET_JWT, SET_PERMISSIONS, SET_ROLES, SET_USER} = useUserStore()
 const enroll = () => {
   const navStore = useNavStore()
   navStore.activeLoginNav = '3'
@@ -80,15 +80,17 @@ const accountLogin = () => {
     //登录成功
     if (res.data.statusCode === 200) {
       // 得到jwt 放入store中
-      userStore.jwt = res.data.data
+      SET_JWT(res.data.data)
       // 进一步获取用户信息存储在store中
       getUserInfo().then(res => {
         //设置用户信息 到store中
-        setUserInfo(res.data.data)
-        //设置avatar
         // 随机数
-        const num = Math.floor(Math.random() * (6)) + 1
-        userStore.user.avatar = 'src/assets/avatar/avatar' + num + '.svg'
+        const rNum = Math.floor(Math.random() * (6)) + 1
+        console.log($state)
+        SET_USER(res.data.data.member);
+        SET_AVATAR(`src/assets/avatar/avatar${rNum}.svg`)
+        SET_ROLES(res.data.data.roles)
+        SET_PERMISSIONS(res.data.data.permissions)
         //路由跳转
         router.push({name: 'home'})
         ElNotification({
@@ -118,7 +120,6 @@ const accountLogin = () => {
     })
   })
 }
-
 </script>
 
 <style scoped>

@@ -13,45 +13,45 @@
           <template #label>
             <span class="mt-6">个人头像</span>
           </template>
-          <el-avatar :src="userStore.user.avatar" class="bg-white border ml-4" size="large"></el-avatar>
+          <el-avatar :src="userStore.avatar" class="bg-white border ml-4" size="large"></el-avatar>
         </el-form-item>
         <el-form-item label="性别:">
           <div class="ml-4 w-50">
             <div class="w-25 m-auto">
-              <el-check-tag :checked=" userStore.user.gender === '男'" class="mr-4" type="primary"
+              <el-check-tag :checked=" info.gender === '男'" class="mr-4" type="primary"
                             @change="toMale">
                 男
               </el-check-tag>
-              <el-check-tag :checked="userStore.user.gender === '女'" type="danger" @change="toFemale">
+              <el-check-tag :checked="info.gender === '女'" type="danger" @change="toFemale">
                 女
               </el-check-tag>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="角色:">
-          <el-tag class="ml-4 w-40" size="large">
-            <!--            之后调用字典方法返回字符串-->
-            <!--            {{ userStore.user.roleid }}-->
-          </el-tag>
+          <div class="flex">
+            <el-tag v-for="item in  userStore.roles " class="ml-4" size="large">
+              {{ item.mname }}
+            </el-tag>
+          </div>
         </el-form-item>
         <el-form-item label="当前状态:">
-          <el-tag class="ml-4 w-40" size="large" type="warning">
-            <!--            之后调用字典方法返回字符串-->
-            {{ userStore.user.state }}
+          <el-tag :type="userStore.user.state=== 0 ? 'danger':'primary'" class="ml-4 w-40" size="large">
+            {{ stateText }}
           </el-tag>
         </el-form-item>
         <el-form-item label="账号:">
           <el-input v-model="userStore.user.logid" class="ml-4 w-50" disabled></el-input>
         </el-form-item>
         <el-form-item label="真实姓名:">
-          <el-input v-model="userStore.user.mname"
+          <el-input v-model="info.mname"
                     :disabled="!edit"
                     class="ml-4 w-50"
                     placeholder="请输入真实姓名"
           ></el-input>
         </el-form-item>
         <el-form-item label="手机号:">
-          <el-input v-model="userStore.user.tel"
+          <el-input v-model="info.tel"
                     :disabled="!edit"
                     class="ml-4 w-50"
                     placeholder="请输入手机号"
@@ -82,8 +82,10 @@
 
 <script setup>
 // 暂存值
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useUserStore} from "@/stores/user.js";
+import {changeInfo} from "@/api/info/index.js";
+import {alertErr, alertSuccess, error, success} from "@/utils/user.js";
 // 将存储在pinia中的角色信息展示
 const userStore = useUserStore()
 // 更改提示
@@ -92,16 +94,54 @@ const tips = '用户角色、当前状态、账号为不可修改属性'
 const edit = ref(false)
 const toMale = () => {
   if (edit.value === true)
-    userStore.user.gender = "男"
+    info.value.gender = "男"
 
 }
 const toFemale = () => {
   if (edit.value === true)
-    userStore.user.gender = "女"
+    info.value.gender = "女"
 }
 //允许更改
 const handleEdit = () => {
   edit.value = !edit.value
+}
+// form表单
+const info = ref({
+  gender: userStore.user.gender,
+  mname: userStore.user.mname,
+  tel: userStore.user.tel,
+  birthday: userStore.user.birthday,
+})
+
+// 状态文字
+const stateText = computed(() => {
+  switch (userStore.user.state) {
+    case 0:
+      return '目前尚未分配角色';
+    case 1:
+      return '已分配角色';
+    default:
+      return '未知状态';
+  }
+});
+
+const handleSubmit = () => {
+
+  changeInfo(info).then(res => {
+    if (res.data.statusCode === 200) {
+      // 将值重新赋给store
+      userStore.user.gender = info.value.gender
+      userStore.user.mname = info.value.mname
+      userStore.user.tel = info.value.tel
+      userStore.user.birthday = info.value.birthday
+      alertSuccess('修改成功')
+      edit.value = false
+    } else {
+      alertErr(res.data.message)
+    }
+  }).catch(err => {
+    error(err)
+  })
 }
 </script>
 

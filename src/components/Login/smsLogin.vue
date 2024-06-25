@@ -109,6 +109,8 @@ const getCode = async () => {
     }
   });
 };
+const {$state, SET_AVATAR, SET_JWT, SET_PERMISSIONS, SET_ROLES, SET_USER} = useUserStore()
+const userStore = useUserStore();
 // 登录
 //手机登录方法
 const phoneLogin = () => {
@@ -118,15 +120,17 @@ const phoneLogin = () => {
             // console.log(res)
             if (res.data.statusCode === 200) {
               // 得到jwt 放入store中
-              const userStore = useUserStore();
-              userStore.jwt = res.data.data
+              SET_JWT(res.data.data)
               // 进一步获取用户信息存储在store中
               getUserInfo().then(res => {
                 //设置用户信息 到store中
-                setUserInfo(res.data.data)
-                //设置avatar
-                const num = Math.floor(Math.random() * (6)) + 1
-                userStore.user.avatar = 'src/assets/avatar/avatar' + num + '.svg'
+                // 随机数
+                const rNum = Math.floor(Math.random() * (6)) + 1
+                console.log($state)
+                SET_USER(res.data.data.member);
+                SET_AVATAR(`src/assets/avatar/avatar${rNum}.svg`)
+                SET_ROLES(res.data.data.roles)
+                SET_PERMISSIONS(res.data.data.permissions)
                 //路由跳转
                 router.push({name: 'home'})
                 ElNotification({

@@ -1,15 +1,15 @@
 <template>
-  <h1>404 oops~~~</h1>
-  <p class="zoom-area"><b>您访问的页面不存在</b></p>
-  <section class="error-container">
-    <span class="four"><span class="screen-reader-text">4</span></span>
-    <span class="zero"><span class="screen-reader-text">0</span></span>
-    <span class="four"><span class="screen-reader-text">4</span></span>
-  </section>
-  <div class="link-container">
-    <!--    <a class="more-link" href="https://www.silocreativo.com/en/creative-examples-404-error-css/" target="_blank">Visit-->
-    <!--      the original article</a>-->
-    <button class="more-link" style="border-radius: 14px" @click="back">返回首页</button>
+  <div class="" style="background-image: url('public/background.svg')">
+    <h1>404 oops~~~</h1>
+    <p class="zoom-area"><b>您访问的页面不存在</b></p>
+    <section class="error-container">
+      <span class="four"><span class="screen-reader-text">4</span></span>
+      <span class="zero"><span class="screen-reader-text">0</span></span>
+      <span class="four"><span class="screen-reader-text">4</span></span>
+    </section>
+    <div class="link-container">
+      <button class="more-link" style="border-radius: 14px" @click="back">返回首页</button>
+    </div>
   </div>
 </template>
 

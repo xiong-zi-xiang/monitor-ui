@@ -114,8 +114,7 @@
         </el-row>
       </el-card>
     </div>
-
-    <div class="section section2"
+    <div class="section section2 "
          style="display: block; background-image:url('/liquid-cheese.svg');background-size: cover ">
       <div class="w-3/4 mx-auto mt-32 board  bg-white rounded-lg shadow-2xl"
            style="height: 700px;border-radius: 14px;border: 1px #f8f8f8">
@@ -193,7 +192,66 @@
 
       </div>
     </div>
+    <div class="section about">
+      <el-card class="w-full" style="height: 900px">
+        <div class="about-section">
+          <h1>关于我们</h1>
+          <p>Some text about who we are and what we do.</p>
+          <p>Resize the browser window to see that this page is responsive by the way.</p>
+        </div>
+
+
+        <h2 style="text-align:center">Our Team</h2>
+        <div class="row">
+          <div class="column">
+            <div class="card">
+              <img alt="Jane" src="/background.svg" style="width:100%">
+              <div class="container">
+                <h2>Jane Doe</h2>
+                <p class="title">CEO & Founder</p>
+                <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                <p>jane@example.com</p>
+                <p>
+                  <button class="button">Contact</button>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="card">
+              <img alt="Mike" src="/background.svg" style="width:100%">
+              <div class="container">
+                <h2>Mike Ross</h2>
+                <p class="title">Art Director</p>
+                <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                <p>mike@example.com</p>
+                <p>
+                  <button class="button">Contact</button>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="card">
+              <img alt="John" src="/background.svg" style="width:100%">
+              <div class="container">
+                <h2>John Doe</h2>
+                <p class="title">Designer</p>
+                <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                <p>john@example.com</p>
+                <p>
+                  <button class="button">Contact</button>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-card>
+    </div>
   </div>
+
 </template>
 
 <script setup>
@@ -229,7 +287,6 @@ const phoneLoginFormRef = ref(null)
 let timer = null;
 const section1Text = ref("Neusoft\n环保公众监督系统");
 const router = useRouter()
-const userStore = useUserStore()
 
 const navStore = useNavStore()
 // 变换登录方式
@@ -279,55 +336,6 @@ onBeforeUnmount(() => {
     fullPageInstance.value.destroy('all');
   }
 })
-//账户登录方法
-const accountLogin = () => {
-  idLogin(accountLoginForm.value.account, accountLoginForm.value.password).then(response => {
-    if (response.data.statusCode === 200) {
-      console.log(response.data)
-      // 成功后将用户数据存储在 store中 调用store.$patch
-      userStore.$patch((state) => {
-        state.jwt = response.data.data.jwt
-        state.user.birthday = response.data.data.member.birthday
-        state.user.gender = response.data.data.member.gender
-        state.user.logid = response.data.data.member.logid
-        state.user.logpwd = response.data.data.member.logpwd
-        state.user.mname = response.data.data.member.mname
-        state.user.tel = response.data.data.member.tel
-        // Avatar存放文件夹
-        const sourceFile = 'src/assets/avatar/avatar' // 加上num为整个路径
-        const avatarNum = Math.floor(Math.random() * 6 + 1)
-        state.user.avatar = sourceFile + avatarNum + '.svg'; // 得到路径
-      })
-      console.log(userStore.$state)
-      router.push({name: 'home'})
-      ElNotification({
-        title: '成功',
-        message: '登陆成功',
-        type: 'success',
-      })
-    } else {
-      ElNotification({
-        title: '错误',
-        message: '账号或密码错误',
-        type: 'error',
-      })
-    }
-  }).catch(
-      error => {
-        ElNotification({
-          title: '错误',
-          message: error,
-          type: 'error',
-        })
-      }
-  )
-}
-//手机登录方法
-const phoneLogin = () => {
-  console.log(phoneLoginForm.value)
-  smsLogin(phoneLoginForm.value.phoneNumber, phoneLoginForm.value.verifyCode).catch().then();
-}
-
 
 const startCountdown = () => {
   countdown.value = 60;
@@ -399,6 +407,73 @@ const activeIndex = ref('1');
 .custom-card:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 鼠标悬停时的阴影效果 */
 }
+
+
+/*不显示logo*/
+.fp-watermark {
+  display: none;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.column {
+  float: left;
+  width: 33.3%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.about-section {
+  padding: 50px;
+  text-align: center;
+  background-color: #474e5d;
+  color: white;
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: grey;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
+
 </style>
 
 
