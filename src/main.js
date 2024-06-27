@@ -12,6 +12,9 @@ import PlusProComponents from 'plus-pro-components'
 import 'plus-pro-components/index.css'
 import piniaPersist from 'pinia-plugin-persistedstate';
 import {useUserStore} from "@/stores/user.js";
+//引入Echarts
+
+// Vue.prototype.$echarts = echarts
 // 在开发环境中使用mock
 if (process.env.NODE_ENV === 'development') {
     import('@/mock/login.js'); // 异步引入 Mock 数据
@@ -19,6 +22,7 @@ if (process.env.NODE_ENV === 'development') {
     import('@/mock/NEPS/feedbackHistory.js')
     import('@/mock/enroll.js')
     import("@/mock/NEPG/index.js")
+    import("@/mock/NEPM/index.js")
 }
 
 const app = createApp(App)

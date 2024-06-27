@@ -59,11 +59,41 @@
             </el-menu-item>
           </router-link>
           <router-link :to="{name:'info'}" class="no-deco">
-            <el-menu-item index="10">
+            <el-menu-item index="7">
               <el-icon>
                 <setting/>
               </el-icon>
               <template #title>个人设置</template>
+            </el-menu-item>
+          </router-link>
+          <router-link :to="{name:'nepgManage'}" class="no-deco">
+            <el-menu-item index="8">
+              <el-icon>
+                <span class="icon-[bi--grid-3x3] size-4"></span>
+              </el-icon>
+              <template #title>
+                网格员管理
+              </template>
+            </el-menu-item>
+          </router-link>
+          <router-link :to="{name:'nepsManage'}" class="no-deco">
+            <el-menu-item index="9">
+              <el-icon>
+                <span class="size-4 icon-[icon-park-outline--public-toilet] "/>
+              </el-icon>
+              <template #title>
+                用户管理
+              </template>
+            </el-menu-item>
+          </router-link>
+          <router-link :to="{name:'feedbackInfo'}" class="no-deco">
+            <el-menu-item index="10">
+              <el-icon>
+                <span class="icon-[lets-icons--info]"/>
+              </el-icon>
+              <template #title>
+                公众反馈信息列表
+              </template>
             </el-menu-item>
           </router-link>
         </el-menu>
@@ -151,7 +181,7 @@
     </el-form>
     <template #footer>
       <div class="w-40 mx-auto">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button @click="dialogFormVisible.value = false">取消</el-button>
         <el-popconfirm
             :icon="InfoFilled"
             cancel-button-text="不"
@@ -171,7 +201,7 @@
 </template>
 
 <script setup>
-import {Document, Files, Histogram, HomeFilled, Operation, Setting, Tickets} from '@element-plus/icons-vue'
+import {Document, Files, Histogram, HomeFilled, Operation, Setting, Tickets, User} from '@element-plus/icons-vue'
 import {onMounted, ref} from 'vue'
 import {useAQIStore} from "@/stores/AQI.js";
 import {useNavStore} from "@/stores/nav.js";

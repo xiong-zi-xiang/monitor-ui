@@ -15,6 +15,9 @@ import smsLogin from '@/components/Login/smsLogin.vue'
 import enroll from '@/components/Login/enroll.vue'
 import page404view from '@/views/page404view.vue'
 import detectView from '@/views/NEPG/task/detectView.vue'
+import nepgManageView from '@/views/NEPM/nepgManage/nepgManageView.vue'
+import nepsManageView from "@/views/NEPM/nepsManage/nepsMangeView.vue"
+import feedbackInfoView from "@/views/NEPM/feedbackInfo/feedbackInfoView.vue"
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,7 +94,25 @@ const router = createRouter({
                     name: 'detectionRecord',
                     component: detectionRecordView,
                     meta: {requiresAuth: true},
-                }
+                },
+                {
+                    path: '/nepgManage',
+                    name: 'nepgManage',
+                    component: nepgManageView,
+                    meta: {requiresAuth: true},
+                },
+                {
+                    path: '/nepsManage',
+                    name: 'nepsManage',
+                    component: nepsManageView,
+                    meta: {requiresAuth: true},
+                },
+                {
+                    path: '/feedbackInfo',
+                    name: 'feedbackInfo',
+                    component: feedbackInfoView,
+                    meta: {requiresAuth: true},
+                },
             ]
         },
         {

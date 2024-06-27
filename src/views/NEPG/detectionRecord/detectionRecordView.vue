@@ -3,7 +3,7 @@
     <template #header>
       <div class="flex justify-center">
         <div>
-          <span class="icon-[icon-park--log] size-6 mr-2"></span> 历史检测记录
+          <span class="icon-[icon-park--log] size-6 mr-2 align-bottom"></span> 历史检测记录
         </div>
       </div>
     </template>

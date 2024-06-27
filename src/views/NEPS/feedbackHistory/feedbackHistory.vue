@@ -214,9 +214,6 @@ const selectTimeLineStyle = (state) => {
 
 <style scoped>
 
-.center {
-  margin: 0 auto 0;
-}
 
 #tag {
   border: none;
