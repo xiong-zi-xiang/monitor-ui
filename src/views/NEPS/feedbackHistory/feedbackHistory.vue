@@ -9,18 +9,18 @@
         <el-statistic :value="outputValue" style="width: 150px;" title="反馈记录条数"/>
       </div>
     </template>
-    <div v-if="loading" style="height: 500px;">
-      <el-skeleton v-if="loading" :rows="4" animated/>
-      <el-skeleton v-if="loading" :rows="4" animated/>
-      <el-skeleton v-if="loading" :rows="4" animated/>
+    <div v-if="loading" style="height: 600px;">
+      <el-skeleton v-if="loading" :rows="7" animated/>
+      <el-skeleton v-if="loading" :rows="7" animated/>
     </div>
     <el-table v-if="!loading"
               :data="record"
-              border height="500" style="width: 100%">
+              border height="600" style="width: 100%">
       <el-table-column type="expand">
         <template #default="props">
           <el-timeline class="ml-4" style="max-width: 600px">
-            <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow1" :type="selectTimeLineStyle(props.row.state).line1Type"
+            <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow1"
+                              :type="selectTimeLineStyle(props.row.state).line1Type"
                               placement="top"
                               timestamp="2018/4/12">
               <el-card shadow="hover">
@@ -28,7 +28,8 @@
                 <el-tag>{{ props.row.afDate + "   " + props.row.afTime }}</el-tag>
               </el-card>
             </el-timeline-item>
-            <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow2" :type="selectTimeLineStyle(props.row.state).line2Type"
+            <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow2"
+                              :type="selectTimeLineStyle(props.row.state).line2Type"
                               placement="top"
                               timestamp="2018/4/3">
               <el-card shadow="hover">
@@ -38,7 +39,8 @@
                 </el-tag>
               </el-card>
             </el-timeline-item>
-            <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow3" :type="selectTimeLineStyle(props.row.state).line3Type"
+            <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow3"
+                              :type="selectTimeLineStyle(props.row.state).line3Type"
                               placement="top"
                               timestamp="2018/4/2">
               <el-card shadow="hover">
@@ -46,7 +48,6 @@
                 <el-tag :type="props.row.state >= 2 ? 'primary':'danger'">
                   {{ props.row.state >= 2 ? props.row.assignDate + "   " + props.row.assignTime : '网格员尚未实测' }}
                 </el-tag>
-                <!--              <el-tag size="large"></el-tag>-->
               </el-card>
             </el-timeline-item>
           </el-timeline>
@@ -76,7 +77,7 @@
     </el-table>
     <!--  分页栏-->
     <template #footer>
-      <div class="center" style="width: 800px;">
+      <div class="flex justify-center">
         <el-pagination
 
             v-model:current-page="currentPage"
@@ -102,9 +103,9 @@ import {TransitionPresets, useTransition} from '@vueuse/core'
 // 记录
 const record = ref()
 const loading = ref(true)
+const total = ref(0)
 //得到初始的分页内容
 onMounted(() => {
-  // problem!!!
   setTimeout(() => {
     selectHistory(1, 10).then(res => {
       // 加上字段
@@ -113,6 +114,7 @@ onMounted(() => {
       })
       record.value = res.data.data.records
       loading.value = false
+      total.value = res.data.total
     }).catch(err => {
       console.log(err)
     })
@@ -122,11 +124,11 @@ onMounted(() => {
 // 分页配置变量
 const currentPage = ref(1);
 const pageSize = ref(10);
-const total = ref(0)
+
 const outputValue = useTransition(total, {
   duration: 1500,
 })
-total.value = 200
+
 
 //处理分页
 function handleCurrentChange(page) {
@@ -139,6 +141,7 @@ function handleCurrentChange(page) {
       })
       record.value = res.data.data.records
       loading.value = false;
+      total.value = res.data.total
     }).catch(err => {
       console.log(err)
     })

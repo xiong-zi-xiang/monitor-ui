@@ -5,15 +5,16 @@ import {useUserStore} from "@/stores/user.js";
 //创建axios实例并配置
 const axiosInstance = axios.create({
     baseURL: baseURL,
-    timeout: 1000,
-    headers: {'X-Custom-Header': 'foobar'}
+    timeout: 5000, // 设置超时时间为5000毫秒（5秒）
+    headers: {
+        'Content-Type': 'application/json',
+    }
 });
 
 // 添加请求拦截器
 axiosInstance.interceptors.request.use(
     function (config) {
         // 在发送请求之前做些什么
-
         console.log(config.url)
         // 对需要加token 不在白名单中的请求路径，加入token
         if (!isExcludedUrl(config.url)) {

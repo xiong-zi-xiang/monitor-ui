@@ -42,6 +42,14 @@
               <template #title>检测任务列表</template>
             </el-menu-item>
           </router-link>
+          <router-link :to="{name:'detect'}" class="no-deco">
+            <el-menu-item index="5">
+              <el-icon>
+                <Position/>
+              </el-icon>
+              <template #title>检测AQI</template>
+            </el-menu-item>
+          </router-link>
           <router-link :to="{name:'detectionRecord'}" class="no-deco">
             <el-menu-item index="6">
               <el-icon>

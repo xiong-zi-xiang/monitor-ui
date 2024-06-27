@@ -29,12 +29,10 @@ export function selectHistory(page, size) {
         baseURL + '/feedback/getFeedbackByTelId', {
             params: {
                 page, size // page 和 size 都是number类型
-            }
-        },
-        {
+            },
             headers: {
                 'Content-Type': 'application/json'
             }
-        }
+        },
     )
 }

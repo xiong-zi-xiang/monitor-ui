@@ -18,7 +18,9 @@ if (process.env.NODE_ENV === 'development') {
     import('@/mock/NEPS/feedback.js')
     import('@/mock/NEPS/feedbackHistory.js')
     import('@/mock/enroll.js')
+    import("@/mock/NEPG/index.js")
 }
+
 const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPersist)
@@ -34,6 +36,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 const userStore = useUserStore()
+
+
 // 路由守卫配置
 router.beforeEach((to, from, next) => {
     console.log("To___", to.name)

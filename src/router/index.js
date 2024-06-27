@@ -14,6 +14,7 @@ import passwordLogin from '@/components/Login/passwordLogin.vue'
 import smsLogin from '@/components/Login/smsLogin.vue'
 import enroll from '@/components/Login/enroll.vue'
 import page404view from '@/views/page404view.vue'
+import detectView from '@/views/NEPG/task/detectView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,6 +78,12 @@ const router = createRouter({
                     path: '/task',
                     name: 'task',
                     component: taskView,
+                    meta: {requiresAuth: true},
+                },
+                {
+                    path: 'detect',
+                    name: 'detect',
+                    component: detectView,
                     meta: {requiresAuth: true},
                 },
                 {
