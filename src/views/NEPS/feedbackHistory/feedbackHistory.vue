@@ -6,7 +6,7 @@
           <h1>历史反馈记录</h1>
         </div>
         <div style="flex-grow: 1"></div>
-        <el-statistic :value="outputValue" style="width: 150px;" title="反馈记录条数"/>
+        <!--        <el-statistic :value="outputValue" style="width: 150px;" title="反馈记录条数"/>-->
       </div>
     </template>
     <div v-if="loading" style="height: 600px;">
@@ -18,20 +18,24 @@
               border height="600" style="width: 100%">
       <el-table-column type="expand">
         <template #default="props">
-          <el-timeline class="ml-4" style="max-width: 600px">
+          <el-card v-if="(props.row.state === null || props.row.state === undefined)">
+            此状态不存在 出现错误
+          </el-card>
+          <el-timeline v-if="!(props.row.state === null || props.row.state === undefined)" class="ml-4"
+                       style="max-width: 600px">
             <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow1"
+                              :timestamp="props.row.afDate"
                               :type="selectTimeLineStyle(props.row.state).line1Type"
-                              placement="top"
-                              timestamp="2018/4/12">
+                              placement="top">
               <el-card shadow="hover">
                 <h4>提交反馈时间</h4>
                 <el-tag>{{ props.row.afDate + "   " + props.row.afTime }}</el-tag>
               </el-card>
             </el-timeline-item>
             <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow2"
+                              :timestamp="props.row.assignDate"
                               :type="selectTimeLineStyle(props.row.state).line2Type"
-                              placement="top"
-                              timestamp="2018/4/3">
+                              placement="top">
               <el-card shadow="hover">
                 <h4>指派网格员时间</h4>
                 <el-tag :type="props.row.state >= 1 ? 'primary':'danger'">
@@ -40,13 +44,27 @@
               </el-card>
             </el-timeline-item>
             <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow3"
+
                               :type="selectTimeLineStyle(props.row.state).line3Type"
-                              placement="top"
-                              timestamp="2018/4/2">
+                              placement="top">
               <el-card shadow="hover">
-                <h4>网格员实测时间</h4>
-                <el-tag :type="props.row.state >= 2 ? 'primary':'danger'">
-                  {{ props.row.state >= 2 ? props.row.assignDate + "   " + props.row.assignTime : '网格员尚未实测' }}
+                <h4>网格员接受指派</h4>
+                <el-tag :type="props.row.state >= 2 ? 'primary':'danger'">{{
+                    props.row.state >= 2 ? '网格员已接受指派' : '网格员未接受指派'
+                  }}
+                </el-tag>
+              </el-card>
+            </el-timeline-item>
+            <el-timeline-item :hollow="selectTimeLineStyle(props.row.state).hollow4"
+                              :timestamp="props.row.confirmDatetime"
+                              :type="selectTimeLineStyle(props.row.state).line4Type"
+                              placement="top">
+              <el-card shadow="hover">
+                <h4>网格员完成实测时间</h4>
+                <el-tag :type="props.row.state >= 3 ? 'primary':'danger'">
+                  {{
+                    props.row.state >= 3 ? props.row.confirmDatetime.replace('T', " ") + "   " + props.row.assignTime : '网格员尚未实测'
+                  }}
                 </el-tag>
               </el-card>
             </el-timeline-item>
@@ -54,10 +72,10 @@
         </template>
       </el-table-column>
       <el-table-column label="编号" prop="afId"/>
-      <el-table-column label="预估污染等级" width="">
+      <el-table-column label="预估污染等级" width="170">
         <template v-slot="{ row }">
           <div style="display: flex;">
-            <div style="width: 150px;">{{ row.AQI.level }}</div>
+            <div style="width: 250px;">{{ row.AQI.level }}</div>
             <el-tag id="tag" :color="row.AQI.color" size="large"></el-tag>
           </div>
         </template>
@@ -98,27 +116,33 @@ import {selectHistory} from "@/api/NEPS/index.js";
 import {onMounted, onUpdated, onUnmounted, onBeforeMount, ref} from "vue";
 import AQI2Text from "../../../../public/AQIText.js";
 import {TransitionPresets, useTransition} from '@vueuse/core'
+import {useUserStore} from "@/stores/user.js";
 
 
 // 记录
 const record = ref()
 const loading = ref(true)
 const total = ref(0)
+const userStore = useUserStore()
 //得到初始的分页内容
 onMounted(() => {
   setTimeout(() => {
-    selectHistory(1, 10).then(res => {
+    selectHistory(1, 10, userStore.user.tel).then(res => {
       // 加上字段
       res.data.data.records.forEach(item => {
         item['AQI'] = AQI2Text(item.estimatedGrade)
       })
       record.value = res.data.data.records
       loading.value = false
-      total.value = res.data.total
+      total.value = res.data.data.total
+      console.log("res.data.data")
+      console.log(res.data.data)
+      console.log(record.value)
     }).catch(err => {
       console.log(err)
     })
   }, 100)
+
 })
 
 // 分页配置变量
@@ -134,14 +158,14 @@ const outputValue = useTransition(total, {
 function handleCurrentChange(page) {
   loading.value = true;
   setTimeout(() => {
-    selectHistory(page, 10).then(res => {
+    selectHistory(page, 10, userStore.user.tel).then(res => {
       // 加上字段
       res.data.data.records.forEach(item => {
         item['AQI'] = AQI2Text(item.estimatedGrade)
       })
       record.value = res.data.data.records
       loading.value = false;
-      total.value = res.data.total
+      total.value = res.data.data.total
     }).catch(err => {
       console.log(err)
     })
@@ -164,23 +188,34 @@ const selectStyle = (row) => {
   if (row.state === 0)
     return {style: 'danger', text: '未分派网格员'}
   else if (row.state === 1)
-    return {style: 'warning', text: '尚未完成实测'}
+    return {style: 'warning', text: '网格员未接受'}
   else if (row.state === 2)
+    return {style: 'info', text: '网格员未实测'}
+  else if (row.state === 3)
     return {style: 'success', text: '已完成实测'}
+  else {
+    return {style: 'info', text: '此状态不存在'}
+  }
 }
 
 const selectTimeLineStyle = (state) => {
+  console.log(state)
   if (state === 0) {
     return {
       line1Type: 'success',
       line2Type: 'warning',
       line3Type: 'danger',
-      line1Icon: 'CircleCheck',
+      line4Type: 'danger',
+      //
+      line1Icon: '',
       line2Icon: '',
       line3Icon: '',
+      line4Icon: '',
+      //
       hollow1: false,
       hollow2: true,
-      hollow3: false
+      hollow3: false,
+      hollow4: false,
     }
   }
   if (state === 1) {
@@ -188,12 +223,17 @@ const selectTimeLineStyle = (state) => {
       line1Type: 'success',
       line2Type: 'success',
       line3Type: 'warning',
+      line4Type: 'danger',
+      //
       line1Icon: '',
       line2Icon: '',
       line3Icon: '',
+      line4Icon: '',
+      //
       hollow1: false,
       hollow2: false,
-      hollow3: true
+      hollow3: true,
+      hollow4: false
     }
   }
   if (state === 2) {
@@ -201,14 +241,42 @@ const selectTimeLineStyle = (state) => {
       line1Type: 'success',
       line2Type: 'success',
       line3Type: 'success',
+      line4Type: 'success',
+      //
       line1Icon: '',
       line2Icon: '',
       line3Icon: '',
+      line4Icon: '',
+      //
       hollow1: false,
       hollow2: false,
-      hollow3: false
+      hollow3: false,
+      hollow4: false,
     }
   }
+  if (state === 3) {
+    return {
+      line1Type: 'success',
+      line2Type: 'success',
+      line3Type: 'success',
+      line4Type: 'success',
+      //
+      line1Icon: '',
+      line2Icon: '',
+      line3Icon: '',
+      line4Icon: '',
+      //
+      hollow1: false,
+      hollow2: false,
+      hollow3: false,
+      hollow4: false,
+    }
+  }
+}
+
+
+function getText(grade) {
+  console.log(grade)
 }
 </script>
 

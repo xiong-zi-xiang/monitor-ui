@@ -116,7 +116,7 @@ function getSelectPage(page, size) {
         })
         // 赋值给表单
         record.value = res.data.data.records
-        total.value = res.data.total
+        total.value = res.data.data.total
         loading.value = false
         console.log(record.value)
       } else {

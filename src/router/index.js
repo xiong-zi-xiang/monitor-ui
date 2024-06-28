@@ -16,7 +16,7 @@ import enroll from '@/components/Login/enroll.vue'
 import page404view from '@/views/page404view.vue'
 import detectView from '@/views/NEPG/task/detectView.vue'
 import nepgManageView from '@/views/NEPM/nepgManage/nepgManageView.vue'
-import nepsManageView from "@/views/NEPM/nepsManage/nepsMangeView.vue"
+import userManageView from "@/views/NEPM/userManage/userManageView.vue"
 import feedbackInfoView from "@/views/NEPM/feedbackInfo/feedbackInfoView.vue"
 
 const router = createRouter({
@@ -102,9 +102,9 @@ const router = createRouter({
                     meta: {requiresAuth: true},
                 },
                 {
-                    path: '/nepsManage',
-                    name: 'nepsManage',
-                    component: nepsManageView,
+                    path: '/userManage',
+                    name: 'userManage',
+                    component: userManageView,
                     meta: {requiresAuth: true},
                 },
                 {

@@ -54,7 +54,7 @@ Mock.mock(baseURL + '/api/v1/members/info', 'get', {
             'id|1-100': 1,
             "mname": "@cname",
             "logid": "@word",
-            "tel": /1[3456789]\d{9}/,
+            "tel": '15083532198',
             'gender|1': ['男', '女'], // 随机生成男或女
             'birthday': '@date("yyyy-MM-dd")', // 随机生成日期
             'state|1': [0, 1], // 随机生成 0 或 1 0没有权限 1是正常

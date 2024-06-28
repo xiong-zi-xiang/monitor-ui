@@ -18,11 +18,14 @@ export function idLogin(logId, logPwd) {
 }
 
 // 获取验证码
-export function getVerifyCode() {
+export function getVerifyCode(mobile) {
     return axiosInstance.post(
         baseURL + '/api/v1/code/sms',
         {},
         {
+            params: {
+                mobile
+            },
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -34,11 +37,12 @@ export function getVerifyCode() {
 export function smsLogin(mobile, smsCode) {
     return axiosInstance.post(
         baseURL + '/api/v1/auth/login/mobile',
+        {},
         {
-            mobile,
-            smsCode
-        },
-        {
+            params: {
+                mobile,
+                smsCode
+            },
             headers: {
                 'Content-Type': 'application/json'
             }

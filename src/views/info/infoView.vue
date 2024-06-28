@@ -127,7 +127,7 @@ const stateText = computed(() => {
 
 const handleSubmit = () => {
 
-  changeInfo(info).then(res => {
+  changeInfo(info.value).then(res => {
     if (res.data.statusCode === 200) {
       // 将值重新赋给store
       userStore.user.gender = info.value.gender

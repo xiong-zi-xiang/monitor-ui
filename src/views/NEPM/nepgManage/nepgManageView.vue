@@ -230,7 +230,7 @@ function getSelectPage(page, size) {
     searchGridInfo(page, size, selectForm.value.logId, selectForm.value.address, selectForm.value.afId, selectForm.value.roleState,).then(res => {
       if (res.data.statusCode === 200) {
         record.value = res.data.data.records
-        total.value = res.data.total
+        total.value = res.data.data.total
         loading.value = false
         console.log(record.value)
       } else {

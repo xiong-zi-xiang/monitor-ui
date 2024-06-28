@@ -76,12 +76,12 @@ Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=1&size=10&finish=0', 'g
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, temp)
+            records: generateMockData(10, temp),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=2&size=10&finish=0', 'get', () => {
@@ -89,12 +89,12 @@ Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=2&size=10&finish=0', 'g
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, temp)
+            records: generateMockData(10, temp),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=3&size=10&finish=0', 'get', () => {
@@ -102,12 +102,12 @@ Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=3&size=10&finish=0', 'g
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, temp)
+            records: generateMockData(10, temp),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=4&size=10&finish=0', 'get', () => {
@@ -115,12 +115,12 @@ Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=4&size=10&finish=0', 'g
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, temp)
+            records: generateMockData(10, temp),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=5&size=10&finish=0', 'get', () => {
@@ -128,12 +128,12 @@ Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=5&size=10&finish=0', 'g
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, temp)
+            records: generateMockData(10, temp),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 
@@ -141,7 +141,7 @@ Mock.mock(baseURL + '/api/v1/feedbacks/waiting-list?page=5&size=10&finish=0', 'g
 Mock.mock(baseURL + '/api/v1/grid-managers/available', 'get', {
     "statusCode": 200,
     "message": "指派成功",
-    "data": false
+    "data": true
 })
 //接受指派
 Mock.mock(baseURL + '/api/v1/grid-managers/assign/accept', 'post', {
@@ -215,12 +215,12 @@ Mock.mock(baseURL + '/api/v1/statistics/history?page=1&size=10', 'get', () => {
             "statusCode": 200,
             "message": "查询成功",
             "data": {
-                records: generateMockData(10, historyTemp)
+                records: generateMockData(10, historyTemp),
+                "total": 100,
+                "size": 10,
+                "current": 1,
+                "pages": 1
             },
-            "total": 100,
-            "size": 10,
-            "current": 1,
-            "pages": 1
         }
     }
 )
@@ -230,12 +230,12 @@ Mock.mock(baseURL + '/api/v1/statistics/history?page=2&size=10', 'get', () => {
             "statusCode": 200,
             "message": "查询成功",
             "data": {
-                records: generateMockData(10, historyTemp)
+                records: generateMockData(10, historyTemp),
+                "total": 100,
+                "size": 10,
+                "current": 1,
+                "pages": 1
             },
-            "total": 100,
-            "size": 10,
-            "current": 1,
-            "pages": 1
         }
     }
 )
@@ -245,12 +245,12 @@ Mock.mock(baseURL + '/api/v1/statistics/history?page=3&size=10', 'get', () => {
             "statusCode": 200,
             "message": "查询成功",
             "data": {
-                records: generateMockData(10, historyTemp)
+                records: generateMockData(10, historyTemp),
+                "total": 100,
+                "size": 10,
+                "current": 1,
+                "pages": 1
             },
-            "total": 100,
-            "size": 10,
-            "current": 1,
-            "pages": 1
         }
     }
 )

@@ -308,7 +308,7 @@ const compute = () => {
 }
 // 上报
 const report = () => {
-  reportInfo().then(res => {
+  reportInfo(detectForm.value.so2, detectForm.value.co, detectForm.value.spm, detectForm.value.remarks).then(res => {
     if (res.data.statusCode === 200) {
       success('成功上报')
       haveTask.value = false

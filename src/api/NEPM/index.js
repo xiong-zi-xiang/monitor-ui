@@ -63,11 +63,29 @@ export function getFeedbackInfo(page, size,
     })
 }
 
+// 查询用户基本信息
+export function getAllUserInfo(page, size, logId, name, mobile, gender, state, roles) {
+    const params = {}
+    // 将params 赋值
+    if (page !== undefined && page !== null) params.page = page;
+    if (size !== undefined && size !== null) params.size = size;
+    if (logId !== undefined && logId !== null) params.logId = logId;
+    if (name !== undefined && name !== null) params.name = name;
+    if (mobile !== undefined && mobile !== null) params.mobile = mobile;
+    if (gender !== undefined && gender !== null) params.gender = gender;
+    if (state !== undefined && state !== null) params.state = state;
+    if (roles !== undefined && roles !== null) params.roles = roles;
+    return axiosInstance.get(baseURL + '/api/v1/members/search', {
+        params
+    })
+}
 
-// //判断是否加上查询参数
-// function addParams(params, val) {
-//     console.log("val", val)
-//     if (val !== undefined && val !== null)
-//         params.val = val;
-// }
+// 查询全部角色信息
+export function getRoleInfo() {
+    return axiosInstance.get(baseURL + '/api/v1/roles', {})
+}
 
+// 修改用户角色
+export function changeUserRoles(logId, roles) {
+    return axiosInstance.put(baseURL + `/api/v1/roles/users/${logId}/roles`, roles, {})
+}

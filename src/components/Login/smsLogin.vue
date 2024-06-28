@@ -90,7 +90,7 @@ const getCode = async () => {
     if (valid) {
       loading.value = true;
       // 发送请求
-      getVerifyCode().then(res => {
+      getVerifyCode(phoneLoginForm.value.phoneNumber).then(res => {
         console.log(res)
         startCountdown()
         if (res.status === 200) {

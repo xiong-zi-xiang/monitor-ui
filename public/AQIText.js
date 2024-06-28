@@ -7,5 +7,5 @@ export default function AQI2Text(AQILevel) {
         5: {level: '五级（重度污染）', color: '#660099'},
         6: {level: '六级（严重污染）', color: '#7e0023'},
     }
-    return (Map[AQILevel])
+    return (Map[AQILevel] !== undefined ? Map[AQILevel] : {level: '不存在', color: '#000'})
 }

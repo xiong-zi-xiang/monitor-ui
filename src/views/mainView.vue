@@ -76,7 +76,7 @@
               </template>
             </el-menu-item>
           </router-link>
-          <router-link :to="{name:'nepsManage'}" class="no-deco">
+          <router-link :to="{name:'userManage'}" class="no-deco">
             <el-menu-item index="9">
               <el-icon>
                 <span class="size-4 icon-[icon-park-outline--public-toilet] "/>

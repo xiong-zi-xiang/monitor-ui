@@ -41,17 +41,17 @@ export const generateMockData = (count, template) => {
 // console.log(JSON.stringify(mockData, null, 2));
 
 //返回
-Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=1&size=10', 'get', (options) => {
+Mock.mock(baseURL + '/api/v1/feedbacks/tel/15083532198?' + 'page=1&size=10', 'get', (options) => {
     return {
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, template)
+            records: generateMockData(10, template),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=2&size=10', 'get', (options) => {
@@ -59,12 +59,12 @@ Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=2&size=10', 'get', (optio
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, template)
+            records: generateMockData(10, template),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=3&size=10', 'get', (options) => {
@@ -72,12 +72,12 @@ Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=3&size=10', 'get', (optio
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, template)
+            records: generateMockData(10, template),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=4&size=10', 'get', (options) => {
@@ -85,12 +85,12 @@ Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=4&size=10', 'get', (optio
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, template)
+            records: generateMockData(10, template),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=5&size=10', 'get', (options) => {
@@ -98,12 +98,12 @@ Mock.mock(baseURL + '/feedback/getFeedbackByTelId?page=5&size=10', 'get', (optio
         "statusCode": 200,
         "message": "查询成功",
         "data": {
-            records: generateMockData(10, template)
+            records: generateMockData(10, template),
+            "total": 100,
+            "size": 10,
+            "current": 1,
+            "pages": 1
         },
-        "total": 100,
-        "size": 10,
-        "current": 1,
-        "pages": 1
     }
 })
 

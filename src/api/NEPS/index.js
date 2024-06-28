@@ -24,9 +24,9 @@ export function submitAQI(AQIForm) {
 }
 
 // 查询历史上报记录
-export function selectHistory(page, size) {
+export function selectHistory(page, size, telId) {
     return axiosInstance.get(
-        baseURL + '/feedback/getFeedbackByTelId', {
+        baseURL + '/api/v1/feedbacks/tel/' + telId, {
             params: {
                 page, size // page 和 size 都是number类型
             },

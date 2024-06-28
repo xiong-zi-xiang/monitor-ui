@@ -50,8 +50,8 @@
                 </template>
                 <span class="align-middle mr-2">{{ scope.row.spmValue }}{{
                     "  "
-                  }}{{ scope.row.spLevel.chineseExplain }}</span>
-                <el-tag id="tag" :color="scope.row.spLevel.color" size="large"></el-tag>
+                  }}{{ scope.row.spmLevel.chineseExplain }}</span>
+                <el-tag id="tag" :color="scope.row.spmLevel.color" size="large"></el-tag>
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
@@ -67,7 +67,7 @@
                 </template>
                 {{ scope.row.cityId }}
               </el-descriptions-item>
-              <el-descriptions-item label="Remarks">
+              <el-descriptions-item>
                 <template #label>
                   <span class="icon-[mdi--code-block-braces] mr-1"></span>
                   区/县邮编
@@ -81,7 +81,7 @@
                 </template>
                 {{ scope.row.information }}
               </el-descriptions-item>
-              <el-descriptions-item label="Address">
+              <el-descriptions-item>
                 <template #label>
                   <span class="icon-[majesticons--annotation-line] mr-1"></span>
                   备注
@@ -99,7 +99,7 @@
         <el-table-column label="实际污染等级">
           <template v-slot="{ row }">
             <div style="display: flex;">
-              <div class="w-20 align-middle"><span class="align-middle">{{ row.aqiLevel.chineseExplain }}</span></div>
+              <div class="w-20 align-bottom"><span class="align-bottom">{{ row.aqiLevel.chineseExplain }}</span></div>
               <el-tag id="tag" :color="row.aqiLevel.color" size="large"></el-tag>
             </div>
           </template>
@@ -134,6 +134,12 @@ import {getTask, selectHistory} from "@/api/NEPG/index.js";
 import {error} from "@/utils/user.js";
 import AQI2Text from "../../../../public/AQIText.js";
 
+onMounted(() => {
+  setTimeout(() => {
+    getPage(1)
+  }, 200)
+  // getPage(1)
+})
 const loading = ref(true)
 const currentPage = ref(1);
 const pageSize = ref(10);
@@ -141,18 +147,14 @@ const pageSize = ref(10);
 const total = ref(0)
 // 表单记录
 const record = ref()
-onMounted(() => {
-  setTimeout(() => {
-    getPage(1)
-  }, 100)
-})
 
-function getPage(page) {
+
+async function getPage(page) {
   selectHistory(page, 10).then(res => {
     if (res.data.statusCode === 200) {
       record.value = res.data.data.records
       loading.value = false
-      total.value = res.data.total
+      total.value = res.data.data.total
       console.log(record.value)
     } else {
       error(res.data.message)

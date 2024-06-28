@@ -66,10 +66,10 @@
         <el-table-column label="城市" prop="cityName"/>
         <el-table-column label="区/县" prop="districtName"/>
         <el-table-column label="具体地址" prop="address"/>
-        <el-table-column label="预估污染等级" prop="estimatedGrade">
+        <el-table-column label="预估污染等级" prop="estimatedGrade" width="200">
           <template v-slot="{ row }">
             <div style="display: flex;">
-              <div style="width: 150px;">{{ row.AQI.level }}</div>
+              <div style="width: 120px;">{{ row.AQI.level }}</div>
               <el-tag id="tag" :color="row.AQI.color" size="large"></el-tag>
             </div>
           </template>
@@ -148,7 +148,7 @@ function handleCurrentChange(page) {
         // 赋值到record
         record.value = res.data.data.records
         loading.value = false;
-        total.value = res.data.total
+        total.value = res.data.data.total
       }).catch(err => {
         error(err)
       })
@@ -160,6 +160,7 @@ function handleCurrentChange(page) {
 
 // 接受委托
 const handleAccept = (row) => {
+  console.log(row)
   ElMessageBox.prompt('请输入备注', '备注', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
@@ -169,6 +170,10 @@ const handleAccept = (row) => {
         acceptAssign(row.afId, row.address, value).then(res => {
           if (res.data.statusCode === 200) {
             success('成功接受委托')
+
+            // 更改显示状态
+            available.value = false
+            console.log(record.value[0].handle)
           } else {
             error(res.data.message)
           }
@@ -228,10 +233,10 @@ function getFirstPage() {
       })
       res.data.data.records[0].handle = true //第一行为当前正在处理的委托
     }
-
     record.value = res.data.data.records
+    console.log(record.value.AQI)
     loading.value = false
-    total.value = res.data.total
+    total.value = res.data.data.total
   }).catch(err => {
     error(err)
   })
