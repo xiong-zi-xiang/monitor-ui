@@ -96,6 +96,16 @@
               </template>
             </el-menu-item>
           </router-link>
+          <router-link :to="{name:'permission'}" class="no-deco">
+            <el-menu-item index="11">
+              <el-icon>
+                <span class="icon-[fluent-mdl2--permissions]"/>
+              </el-icon>
+              <template #title>
+                角色权限管理
+              </template>
+            </el-menu-item>
+          </router-link>
         </el-menu>
       </el-aside>
       <el-container>
@@ -137,7 +147,7 @@
                 />
                 <span class="text-large font-600 mr-3 font-semibold ml-4 mb-2"> {{ userStore.user.mname }} </span>
                 <el-tag v-for="item in  userStore.roles " class="ml-4" size="large">
-                  {{ item.mname }}
+                  {{ item.nickName }}
                 </el-tag>
                 <el-dropdown class="el-dropdown-link ml-4 mb-2" @command="handleCommand">
                   <span class="el-dropdown-link outline-0">
@@ -254,17 +264,35 @@ const handleCommand = (command) => {
     dialogFormVisible.value = true;
   }
   if (command === 'b') {
-    // 退出登录
-    userStore.$reset()
-    AQIStore.$reset()
-    navStore.$reset()
-    // router.push({name: "passwordLogin"})
-    router.push('/login/passwordLogin#firstPage')
-    // 显示提示
-    ElNotification({
-      title: '提示',
-      message: '退出成功',
-      type: "success"
+    //请求退出
+    // 加载动画
+    let loading = openFullLoading()
+    logOut().then(res => {
+      if (res.data.statusCode === 200) {
+        // 退出登录
+        userStore.$reset()
+        AQIStore.$reset()
+        navStore.$reset()
+        router.push('/login/passwordLogin#firstPage')
+        // 显示提示
+        ElNotification({
+          title: '提示',
+          message: '退出成功',
+          type: "success"
+        })
+      } else {
+        error(res.data.message)
+      }
+    }).catch(err => {
+      error(err)
+    }).finally(() => {
+      closeLoadingFull(loading)
+      // 退出登录
+      userStore.$reset()
+      AQIStore.$reset()
+      navStore.$reset()
+      router.push('/login/passwordLogin#firstPage')
+
     })
   }
 }
@@ -273,6 +301,8 @@ const handleCommand = (command) => {
 import {InfoFilled} from '@element-plus/icons-vue'
 import {changePassword} from "@/api/info/index.js";
 import {error, success} from "@/utils/user.js";
+import {logOut} from "@/api/login/index.js";
+import {closeLoadingFull, openFullLoading} from "../../public/Loading.js";
 
 const handleSubmit = () => {
   // 判断是否相等
@@ -280,18 +310,24 @@ const handleSubmit = () => {
     error('两次输入的密码不一致，请重新输入')
   } else {
     // 密码一致时发送请求
+    let loading = openFullLoading()
     console.log(passwordForm.value.newPassword)
-    changePassword(passwordForm.value.newPassword).then(res => {
+    changePassword(passwordForm.value.newPassword, userStore.user.logpwd).then(res => {
       // 成功
       if (res.data.statusCode === 200) {
         success("修改成功")
+        // 将现在密码更改
+        userStore.user.logpwd = passwordForm.value.newPassword
         dialogFormVisible.value = false
       } else {
         error(res.data.message)
       }
     }).catch(err => {
       error(err)
-    })
+    }).finally(() => {
+          closeLoadingFull(loading)
+        }
+    )
   }
 }
 const cancelEvent = () => {

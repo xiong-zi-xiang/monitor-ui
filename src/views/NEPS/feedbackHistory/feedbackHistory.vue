@@ -6,17 +6,13 @@
           <h1>历史反馈记录</h1>
         </div>
         <div style="flex-grow: 1"></div>
-        <!--        <el-statistic :value="outputValue" style="width: 150px;" title="反馈记录条数"/>-->
+        <el-statistic :value="outputValue" style="width: 150px;" title="反馈记录条数"/>
       </div>
     </template>
-    <div v-if="loading" style="height: 600px;">
-      <el-skeleton v-if="loading" :rows="7" animated/>
-      <el-skeleton v-if="loading" :rows="7" animated/>
-    </div>
-    <el-table v-if="!loading"
+    <el-table v-loading="loading"
               :data="record"
               border height="600" style="width: 100%">
-      <el-table-column type="expand">
+      <el-table-column label="详情" type="expand" width="60">
         <template #default="props">
           <el-card v-if="(props.row.state === null || props.row.state === undefined)">
             此状态不存在 出现错误
@@ -63,7 +59,7 @@
                 <h4>网格员完成实测时间</h4>
                 <el-tag :type="props.row.state >= 3 ? 'primary':'danger'">
                   {{
-                    props.row.state >= 3 ? props.row.confirmDatetime.replace('T', " ") + "   " + props.row.assignTime : '网格员尚未实测'
+                    props.row.state >= 3 ? props.row.confirmDatetime.replace("T", ' ') : '网格员尚未实测'
                   }}
                 </el-tag>
               </el-card>

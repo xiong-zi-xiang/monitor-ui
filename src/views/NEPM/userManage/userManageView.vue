@@ -9,11 +9,7 @@
       </div>
     </template>
     <template #default>
-      <div v-if="loading" style="height: 400px;">
-        <el-skeleton v-if="loading" :rows="5" animated/>
-        <el-skeleton v-if="loading" :rows="5" animated/>
-      </div>
-      <el-form v-if="!loading" ref="selectFormRef" :inline="true" :model="conditionForm">
+      <el-form ref="selectFormRef" :inline="true" :model="conditionForm">
         <el-form-item label="账号">
           <el-input v-model="conditionForm.logId" placeholder="请输入账号"></el-input>
         </el-form-item>
@@ -50,7 +46,7 @@
           查询
         </el-button>
       </el-form>
-      <el-table v-if="!loading" :data="record" height="400" highlight-current-row style="width: 100%;"
+      <el-table v-loading="loading" :data="record" height="400" highlight-current-row style="width: 100%;"
                 @current-change="handleSelect">
         <el-table-column type="expand">
           <template #default="scope">

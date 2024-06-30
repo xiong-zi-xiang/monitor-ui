@@ -8,11 +8,7 @@
       </div>
     </template>
     <template #default>
-      <div v-if="loading" style="height: 600px;">
-        <el-skeleton v-if="loading" :rows="7" animated/>
-        <el-skeleton v-if="loading" :rows="7" animated/>
-      </div>
-      <el-table v-if="!loading" :data="record" height="600" style="width: 100%">
+      <el-table v-loading="loading" :data="record" height="600" style="width: 100%">
         <el-table-column type="expand">
           <template #default="scope">
             <el-descriptions :column="2" border class="ml-2" size="large" title="详细信息">

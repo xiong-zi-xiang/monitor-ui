@@ -28,7 +28,10 @@
         </el-link>
       </div>
       <div class="flex mt-6">
-        <el-button class="mr-3" round size="large" type="primary" @click="accountLogin">现在登录</el-button>
+        <el-button v-loading.fullscreen.lock="fullscreenLoading" class="mr-3" round size="large" type="primary"
+                   @click="accountLogin">
+          现在登录
+        </el-button>
         <el-button round size="large" @click="enroll">注册账号</el-button>
       </div>
     </template>
@@ -47,6 +50,8 @@ import router from "@/router/index.js";
 import {useNavStore} from "@/stores/nav.js";
 //是否记住
 const remember = ref(false);
+// 加载变量
+const fullscreenLoading = ref(false)
 const rememberMe = () => {
   remember.value = !remember.value
 }
@@ -72,8 +77,15 @@ const enroll = () => {
   navStore.activeLoginNav = '3'
   router.push({name: 'enroll'})
 }
+
 // 登录方法
 const accountLogin = () => {
+  // 弹出加载框
+  fullscreenLoading.value = true
+  // 六秒后自动取消
+  setTimeout(() => {
+    fullscreenLoading.value = false
+  }, 6000)
   console.log(accountLoginForm.value)
   idLogin(accountLoginForm.value.account, accountLoginForm.value.password).then(res => {
     // console.log(res)
@@ -89,8 +101,11 @@ const accountLogin = () => {
         console.log($state)
         SET_USER(res.data.data.member);
         SET_AVATAR(`src/assets/avatar/avatar${rNum}.svg`)
+        console.log(res.data.data)
         SET_ROLES(res.data.data.roles)
         SET_PERMISSIONS(res.data.data.permissions)
+        // 成功的话将密码存储
+        useUserStore().$state.user.logpwd = accountLoginForm.value.password
         //路由跳转
         router.push({name: 'home'})
         ElNotification({
@@ -104,6 +119,9 @@ const accountLogin = () => {
           message: err,
           type: 'error',
         })
+        setTimeout(() => {
+          fullscreenLoading.value = false
+        }, 200)
       })
     } else {
       ElNotification({
@@ -111,6 +129,9 @@ const accountLogin = () => {
         message: res.data.message,
         type: 'error',
       })
+      setTimeout(() => {
+        fullscreenLoading.value = false
+      }, 200)
     }
   }).catch(err => {
     ElNotification({

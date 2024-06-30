@@ -88,12 +88,12 @@
             <el-input v-model.number="detectForm.so2" class="w-44" placeholder="请输入测量的SO2浓度">
             </el-input>
             <span class="ml-2">ug/m<sup>3</sup></span>
-            <span class="w-8 ml-2"
+            <span class="w-16 ml-2"
                   style="display: inline-block">
               {{
                 detectAQILevel.textSO2 === '' ? '  ' : detectAQILevel.textSO2
               }}</span>
-            <el-tag id="tag" :color="detectAQILevel.colorAQI" size="large"></el-tag>
+            <el-tag id="tag" :color="detectAQILevel.colorSO2" size="large"></el-tag>
           </el-form-item>
           <el-form-item prop="co">
             <template #label>
@@ -103,12 +103,12 @@
 
             </el-input>
             <span class="ml-2">ug/m<sup>3</sup></span>
-            <span class="w-8 ml-2"
+            <span class="w-16 ml-2"
                   style="display: inline-block">
               {{
                 detectAQILevel.textCO === '' ? '  ' : detectAQILevel.textCO
               }}</span>
-            <el-tag id="tag" :color="detectAQILevel.colorAQI" size="large"></el-tag>
+            <el-tag id="tag" :color="detectAQILevel.colorCO" size="large"></el-tag>
           </el-form-item>
           <el-form-item prop="spm">
             <template #label>
@@ -117,12 +117,12 @@
             <el-input v-model.number="detectForm.spm" class="w-44" placeholder="请输入测量的SPM浓度">
             </el-input>
             <span class="ml-2">ug/m<sup>3</sup></span>
-            <span class="w-8 ml-2"
+            <span class="w-16 ml-2"
                   style="display: inline-block">
               {{
                 detectAQILevel.textSPM === '' ? '  ' : detectAQILevel.textSPM
               }}</span>
-            <el-tag id="tag" :color="detectAQILevel.colorAQI" size="large"></el-tag>
+            <el-tag id="tag" :color="detectAQILevel.colorSPM" size="large"></el-tag>
           </el-form-item>
           <el-form-item prop="AQILevel">
             <template #label>
@@ -164,6 +164,7 @@ import {onMounted, ref} from "vue";
 import {getAQILevel, getCurrentTask, isAvailable, reportInfo} from "@/api/NEPG/index.js";
 import {error, success} from "@/utils/user.js";
 import AQI2Text from "../../../../public/AQIText.js";
+import {closeLoadingFull, openFullLoading} from "../../../../public/Loading.js";
 
 
 const detectFormRef = ref(null)
@@ -258,34 +259,36 @@ const detectAQILevel = ref({
 })
 
 onMounted(() => {
-  setTimeout(() => {
-    isAvailable().then(res => {
-      if (res.data.statusCode === 200) {
-        haveTask.value = !res.data.data
-      } else {
-        error(res.data.message)
-      }
-    }).catch(err => {
-      console.log(err)
-      error(err)
-    })
-    getCurrentTask().then(res => {
-      if (res.data.statusCode === 200) {
-        // 加上预估AQI字段
-        res.data.data['AQI'] = AQI2Text(res.data.data.estimatedGrade)
-        taskInfo.value = res.data.data
-      } else if (res.data.statusCode === 404) {
-        haveTask.value = false
-      }
-    }).catch(err => {
-      error(err)
-    })
-  }, 50)
+  let loading = openFullLoading()
+  isAvailable().then(res => {
+    if (res.data.statusCode === 200) {
+      haveTask.value = !res.data.data
+      getCurrentTask().then(res => {
+        if (res.data.statusCode === 200) {
+          // 加上预估AQI字段
+          res.data.data['AQI'] = AQI2Text(res.data.data.estimatedGrade)
+          taskInfo.value = res.data.data
+        } else if (res.data.statusCode === 404) {
+          haveTask.value = false
+        }
+      }).catch(err => {
+        error(err)
+      })
+    } else {
+      error(res.data.message)
+    }
+  }).catch(err => {
+    console.log(err)
+    error(err)
+  }).finally(() => {
+    closeLoadingFull(loading)
+  })
 })
 // 计算AQI
 const compute = () => {
   detectFormRef.value.validate((valid) => {
     if (valid) {
+      let loading = openFullLoading()
       getAQILevel(detectForm.value.so2, detectForm.value.co, detectForm.value.spm).then(res => {
         if (res.data.statusCode === 200) {
           // 成功计算 进行赋值
@@ -302,12 +305,15 @@ const compute = () => {
         }
       }).catch(err => {
         error(err)
+      }).finally(() => {
+        closeLoadingFull(loading)
       })
     }
   })
 }
 // 上报
 const report = () => {
+  let loading = openFullLoading()
   reportInfo(detectForm.value.so2, detectForm.value.co, detectForm.value.spm, detectForm.value.remarks).then(res => {
     if (res.data.statusCode === 200) {
       success('成功上报')
@@ -317,6 +323,8 @@ const report = () => {
     }
   }).catch(err => {
     error(err)
+  }).finally(() => {
+    closeLoadingFull(loading)
   })
 }
 </script>

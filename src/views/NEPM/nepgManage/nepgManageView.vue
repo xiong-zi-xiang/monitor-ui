@@ -8,13 +8,8 @@
         </div>
       </div>
     </template>
-
     <template #default>
-      <div v-if="loading" style="height: 600px;">
-        <el-skeleton v-if="loading" :rows="7" animated/>
-        <el-skeleton v-if="loading" :rows="7" animated/>
-      </div>
-      <el-form v-if="!loading" ref="selectFormRef" :inline="true" :model="conditionForm">
+      <el-form ref="selectFormRef" :inline="true" :model="conditionForm">
         <el-form-item label="编号">
           <el-input v-model.number="conditionForm.afId" placeholder="请输入编号"></el-input>
         </el-form-item>
@@ -41,7 +36,7 @@
           查询
         </el-button>
       </el-form>
-      <el-table v-if="!loading" :data="record" height="600" stripe style="width: 100%; ">
+      <el-table v-loading="loading" :data="record" height="600" stripe style="width: 100%; ">
         <el-table-column label="账号" prop="member.logid"/>
         <el-table-column label="姓名" prop="member.mname"/>
         <el-table-column label="手机号" prop="member.tel" width="150"/>

@@ -18,6 +18,7 @@ import detectView from '@/views/NEPG/task/detectView.vue'
 import nepgManageView from '@/views/NEPM/nepgManage/nepgManageView.vue'
 import userManageView from "@/views/NEPM/userManage/userManageView.vue"
 import feedbackInfoView from "@/views/NEPM/feedbackInfo/feedbackInfoView.vue"
+import permissionView from '@/views/NEPM/permission/permisssionView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -111,6 +112,12 @@ const router = createRouter({
                     path: '/feedbackInfo',
                     name: 'feedbackInfo',
                     component: feedbackInfoView,
+                    meta: {requiresAuth: true},
+                },
+                {
+                    path: '/permission',
+                    name: 'permission',
+                    component: permissionView,
                     meta: {requiresAuth: true},
                 },
             ]

@@ -61,3 +61,8 @@ export function getUserInfo() {
         }
     )
 }
+
+// 登出
+export function logOut() {
+    return axiosInstance.post(baseURL + '/api/v1/auth/logout', {}, {})
+}

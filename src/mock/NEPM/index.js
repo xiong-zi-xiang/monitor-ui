@@ -47,6 +47,19 @@ Mock.mock(baseURL + '/api/v1/grid-managers/search?page=1&size=10', 'get', () => 
         },
     }
 })
+Mock.mock(baseURL + '/api/v1/grid-managers/search?page=1&size=10', 'get', () => {
+    return {
+        "statusCode": 200,
+        "message": "查询成功",
+        "data": {
+            records: generateMockData(10, temp),
+            "total": 165,
+            "size": 10,
+            "current": 1,
+            "pages": 1
+        },
+    }
+})
 Mock.mock(baseURL + '/api/v1/grid-managers/search?page=2&size=10', 'get', () => {
     return {
         "statusCode": 200,
@@ -123,17 +136,17 @@ const feedbackInfoTemp = {
     "cityName": "@city",
     "districtId": "110105",
     "districtName": "@county",
-    "address": "@cword",
+    "address": "@cword(6,9)",
     "information": "@word",
     "estimatedGrade|1": [null, 1, 2, 3, 4, 5, 6],
     "afDate": "@date",
     "afTime": "@time",
     "gmId": "@cword(3,5)",
-    "gmName": "@cname",
+    "gmName|1": ["@cname", null],
     "assignDate|1": ["@date", null],
     "assignTime|1": ["@date", null],
     "confirmDatetime|1": ["@date", null],
-    "state": 0,
+    "state|1": [0, 1, 2, 3, 4],
     "remarks": "@cword",
     "timestamp": 1718232720000
 }

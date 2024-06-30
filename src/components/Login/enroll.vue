@@ -30,14 +30,16 @@
             <span
                 class="icon-[material-symbols--check-circle-outline] size-4  align-text-bottom mr-1"></span><span>已阅读并同意</span>
         </el-check-tag>
-        <el-link class="ml-2">用户条款</el-link>
+        <el-link class="ml-4">用户条款</el-link>
         <div class="flex-1"/>
         <el-link>
           忘记密码？
         </el-link>
       </div>
       <div class="flex mt-6">
-        <el-button round size="large" @click="phoneEnroll">注册账号</el-button>
+        <el-button v-loading.fullscreen.lock="fullScreenLoading" round size="large" type="primary" @click="phoneEnroll">
+          注册账号
+        </el-button>
       </div>
     </template>
   </el-card>
@@ -52,6 +54,7 @@ import {enroll,} from "@/api/enroll/index.js";
 import router from "@/router/index.js";
 import {useNavStore} from "@/stores/nav.js";
 
+const fullScreenLoading = ref(false)
 let timer = null;
 const loading = ref(false);
 const countdown = ref(0);
@@ -85,7 +88,7 @@ const getCode = async () => {
     if (valid) {
       loading.value = true;
       // 发送请求
-      getVerifyCode().then(res => {
+      getVerifyCode(phoneEnrollForm.value.phoneNumber).then(res => {
         startCountdown()
         if (res.status === 200) {
           ElNotification({
@@ -107,6 +110,10 @@ const getCode = async () => {
 //手机注册方法
 const phoneEnroll = () => {
   console.log(phoneEnrollForm.value)
+  fullScreenLoading.value = true
+  setTimeout(() => {
+    fullScreenLoading.value = false
+  }, 6000)
   enroll(phoneEnrollForm.value.phoneNumber, phoneEnrollForm.value.verifyCode)
       .then((res) => {
             console.log(res)
@@ -136,10 +143,14 @@ const phoneEnroll = () => {
           message: err.data.message,
           type: 'error',
         })
-      })
+      }).finally(() => {
+    setTimeout(() => {
+      fullScreenLoading.value = false
+    }, 200)
+  })
 }
 
-const allow = ref(false)
+let allow = ref(false)
 const allowClause = () => {
   allow.value = !allow.value
 }

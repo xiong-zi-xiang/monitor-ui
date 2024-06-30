@@ -31,7 +31,7 @@
         <el-form-item label="角色:">
           <div class="flex">
             <el-tag v-for="item in  userStore.roles " class="ml-4" size="large">
-              {{ item.mname }}
+              {{ item.nickName }}
             </el-tag>
           </div>
         </el-form-item>

@@ -25,7 +25,7 @@ export function changeGridState(logId, state) {
     }, {})
 }
 
-// 获取feedbackInfo assignStatus 为指派状态 => number数据
+// 获取feedbackInfo assignStatus 为指派状态 => number数据 estimatedGrade  number
 export function getFeedbackInfo(page, size,
                                 telId,
                                 provinceName, cityName, districtName, address,
@@ -35,28 +35,28 @@ export function getFeedbackInfo(page, size,
                                 assignDateStart, assignDateEnd, assignDateAscending, assignStatus) {
     const params = {}
     // 将params 赋值
-    if (page !== undefined && page !== null) params.page = page;
-    if (size !== undefined && size !== null) params.size = size;
+    if (page !== '' && page !== null) params.page = page;
+    if (size !== '' && size !== null) params.size = size;
     //
-    if (telId !== undefined && telId !== null) params.telId = telId;
+    if (telId !== '' && telId !== null) params.telId = telId;
     //
-    if (provinceName !== undefined && provinceName !== null) params.provinceName = provinceName;
-    if (cityName !== undefined && cityName !== null) params.cityName = cityName;
-    if (districtName !== undefined && districtName !== null) params.districtName = districtName;
-    if (address !== undefined && address !== null) params.address = address;
+    if (provinceName !== '' && provinceName !== null) params.provinceName = provinceName;
+    if (cityName !== '' && cityName !== null) params.cityName = cityName;
+    if (districtName !== '' && districtName !== null) params.districtName = districtName;
+    if (address !== '' && address !== null) params.address = address;
     //
-    if (estimatedGrade !== undefined && estimatedGrade !== null) params.estimatedGrade = estimatedGrade;
+    if (estimatedGrade !== '' && estimatedGrade !== null) params.estimatedGrade = estimatedGrade;
     //
-    if (afDateStart !== undefined && afDateStart !== null) params.logId = afDateStart;
-    if (afDateAscending !== undefined && afDateAscending !== null) params.afDateAscending = afDateAscending;
-    if (afDateEnd !== undefined && afDateEnd !== null) params.afDateEnd = afDateEnd;
+    if (afDateStart !== '' && afDateStart !== null) params.logId = afDateStart;
+    if (afDateAscending !== '' && afDateAscending !== null) params.afDateAscending = afDateAscending;
+    if (afDateEnd !== '' && afDateEnd !== null) params.afDateEnd = afDateEnd;
     //
-    if (gridManager_id !== undefined && gridManager_id !== null) params.gridManager_id = gridManager_id;
+    if (gridManager_id !== '' && gridManager_id !== null) params.gridManager_id = gridManager_id;
     //
-    if (assignDateStart !== undefined && assignDateStart !== null) params.assignDateStart = assignDateStart;
-    if (assignDateEnd !== undefined && assignDateEnd !== null) params.assignDateEnd = assignDateEnd;
-    if (assignDateAscending !== undefined && assignDateAscending !== null) params.assignDateAscending = assignDateAscending;
-    //
+    if (assignDateStart !== '' && assignDateStart !== null) params.assignDateStart = assignDateStart;
+    if (assignDateEnd !== '' && assignDateEnd !== null) params.assignDateEnd = assignDateEnd;
+    if (assignDateAscending !== '' && assignDateAscending !== null) params.assignDateAscending = assignDateAscending;
+    // problems?
     if (assignStatus !== undefined && assignStatus !== null) params.assignStatus = assignStatus;
     return axiosInstance.get(baseURL + '/api/v1/feedbacks/search', {
         params
@@ -67,14 +67,14 @@ export function getFeedbackInfo(page, size,
 export function getAllUserInfo(page, size, logId, name, mobile, gender, state, roles) {
     const params = {}
     // 将params 赋值
-    if (page !== undefined && page !== null) params.page = page;
-    if (size !== undefined && size !== null) params.size = size;
-    if (logId !== undefined && logId !== null) params.logId = logId;
-    if (name !== undefined && name !== null) params.name = name;
-    if (mobile !== undefined && mobile !== null) params.mobile = mobile;
-    if (gender !== undefined && gender !== null) params.gender = gender;
+    if (page !== '' && page !== null) params.page = page;
+    if (size !== '' && size !== null) params.size = size;
+    if (logId !== '' && logId !== null) params.logId = logId;
+    if (name !== '' && name !== null) params.name = name;
+    if (mobile !== '' && mobile !== null) params.mobile = mobile;
+    if (gender !== '' && gender !== null) params.gender = gender;
     if (state !== undefined && state !== null) params.state = state;
-    if (roles !== undefined && roles !== null) params.roles = roles;
+    if (roles !== '' && roles !== null) params.roles = roles;
     return axiosInstance.get(baseURL + '/api/v1/members/search', {
         params
     })
@@ -88,4 +88,18 @@ export function getRoleInfo() {
 // 修改用户角色
 export function changeUserRoles(logId, roles) {
     return axiosInstance.put(baseURL + `/api/v1/roles/users/${logId}/roles`, roles, {})
+}
+
+// 指派网格员
+export function assignGrid(afId, logId) {
+    return axiosInstance.post(baseURL + '/api/v1/feedbacks/assign', {
+        afId, logId
+    })
+}
+
+// 获取用户的权限信息
+
+// 获取权限树
+export function getPermission() {
+    return axiosInstance.get(baseURL + '/api/v1/permissions/tree', {})
 }

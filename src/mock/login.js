@@ -63,7 +63,7 @@ Mock.mock(baseURL + '/api/v1/members/info', 'get', {
         "roles|1-3": [
             {
                 "id|+1": 1,
-                "mname": '@pick(["公众监督员", "网格员", "系统管理员" ])',
+                "nickName": '@pick(["公众监督员", "网格员", "系统管理员" ])',
                 "enable|1": [0, 1], // 1是启用
                 "remark": "@cparagraph"
             }

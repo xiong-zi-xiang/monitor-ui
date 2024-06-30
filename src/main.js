@@ -16,14 +16,18 @@ import {useUserStore} from "@/stores/user.js";
 
 // Vue.prototype.$echarts = echarts
 // 在开发环境中使用mock
-if (process.env.NODE_ENV === 'development') {
-    // import('@/mock/login.js'); // 异步引入 Mock 数据
-    // import('@/mock/NEPS/feedback.js')
-    // import('@/mock/NEPS/feedbackHistory.js')
-    // import('@/mock/enroll.js')
-    // import("@/mock/NEPG/index.js")
-    // import("@/mock/NEPM/index.js")
+const useMock = () => {
+    import('@/mock/login.js'); // 异步引入 Mock 数据
+    import('@/mock/NEPS/feedback.js')
+    import('@/mock/NEPS/feedbackHistory.js')
+    import('@/mock/enroll.js')
+    import("@/mock/NEPG/index.js")
+    import("@/mock/NEPM/index.js")
 }
+if (process.env.NODE_ENV === 'development') {
+    // useMock();
+}
+
 
 const app = createApp(App)
 const pinia = createPinia()

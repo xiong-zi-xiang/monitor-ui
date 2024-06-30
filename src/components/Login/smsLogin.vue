@@ -16,7 +16,9 @@
                 <span class="icon-[hugeicons--bookmark-check-02]"></span>
               </template>
             </el-input>
-            <el-button :disabled="loading || countdown > 0" class="ml-2" size="large" type="primary"
+            <el-button v-loading.fullscreen.lock="fullscreenLoading" :disabled="loading || countdown > 0" class="ml-2"
+                       size="large"
+                       type="primary"
                        @click="getCode">
               <span class="icon-[carbon--fetch-upload]"></span>{{
                 countdown > 0 ? `${countdown}秒后重试` : (loading ? '发送中...' : '获取验证码')
@@ -52,6 +54,8 @@ import router from "@/router/index.js";
 import {setUserInfo} from "@/utils/user.js";
 // 验证码
 let timer = null;
+// 加载
+const fullscreenLoading = ref(false)
 const loading = ref(false);
 const countdown = ref(0);
 const startCountdown = () => {
@@ -115,6 +119,10 @@ const userStore = useUserStore();
 //手机登录方法
 const phoneLogin = () => {
   console.log(phoneLoginForm.value)
+  fullscreenLoading.value = true
+  setTimeout(() => {
+    fullscreenLoading.value = false
+  }, 6000)
   smsLogin(phoneLoginForm.value.phoneNumber, phoneLoginForm.value.verifyCode)
       .then((res) => {
             // console.log(res)
@@ -151,6 +159,9 @@ const phoneLogin = () => {
                 message: res.data.message,
                 type: 'error',
               })
+              setTimeout(() => {
+                fullscreenLoading.value = false
+              }, 200)
             }
           }
       )
@@ -160,6 +171,9 @@ const phoneLogin = () => {
           message: err.data.message,
           type: 'error',
         })
+        setTimeout(() => {
+          fullscreenLoading.value = false
+        }, 200)
       })
 }
 const remember = ref(false)

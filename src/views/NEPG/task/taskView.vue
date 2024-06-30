@@ -8,11 +8,7 @@
     </template>
 
     <template #default>
-      <div v-if="loading" style="height: 600px;">
-        <el-skeleton v-if="loading" :rows="7" animated/>
-        <el-skeleton v-if="loading" :rows="7" animated/>
-      </div>
-      <el-table v-if="!loading" :data="record" height="600" style="width: 100%">
+      <el-table v-loading="loading" :data="record" height="600" style="width: 100%">
         <el-table-column type="expand">
           <template #default="scope">
             <el-descriptions :column="2" border class="ml-2" size="large" title="详细信息">
@@ -120,6 +116,7 @@ import AQI2Text from "../../../../public/AQIText.js";
 import {alertSuccess, alertWarning, error, success} from "@/utils/user.js";
 import {selectHistory} from "@/api/NEPS/index.js";
 import {ElMessageBox} from "element-plus";
+import {closeLoadingFull, openFullLoading} from "../../../../public/Loading.js";
 
 const loading = ref(true)
 const currentPage = ref(1);
@@ -161,29 +158,33 @@ function handleCurrentChange(page) {
 // 接受委托
 const handleAccept = (row) => {
   console.log(row)
+  let loading
   ElMessageBox.prompt('请输入备注', '备注', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
   })
       .then(({value}) => {
         console.log(value)
+        loading = openFullLoading()
         acceptAssign(row.afId, row.address, value).then(res => {
           if (res.data.statusCode === 200) {
-            success('成功接受委托')
-
+            success('成功接受委托,委托号为：' + row.afId)
             // 更改显示状态
             available.value = false
-            console.log(record.value[0].handle)
+            getFirstPage()
           } else {
             error(res.data.message)
           }
         }).catch(err => {
           error(err)
+        }).finally(() => {
+          closeLoadingFull(loading)
         })
       })
       .catch(() => {
         alertWarning('取消指派')
-      })
+      }).finally(() => {
+  })
 }
 
 

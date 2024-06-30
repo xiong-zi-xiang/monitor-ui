@@ -277,7 +277,7 @@ import {useUserStore} from "@/stores/user.js";
 import {Avatar} from "@element-plus/icons-vue";
 import {useNavStore} from "@/stores/nav.js";
 
-const url = '/illusion3.svg'
+
 const modules = ref([Pagination, Navigation])
 
 //verify code
@@ -292,33 +292,6 @@ const navStore = useNavStore()
 // 变换登录方式
 const changeLogin = (key, path) => {
   navStore.activeLoginNav = key
-}
-const accountLoginForm = ref({
-  account: '',
-  password: '',
-})
-const phoneLoginForm = ref({
-  phoneNumber: '',
-  verifyCode: '',
-})
-
-const accountLoginRules = {
-  account: [
-    {required: true, message: '请输入账号', trigger: 'blur'}
-  ],
-  password: [
-    {required: true, message: '请输入密码', trigger: 'blur'}
-  ]
-}
-
-const phoneLoginRules = {
-  phoneNumber: [
-    {required: true, message: '请输入手机号', trigger: 'blur'},
-    {pattern: /^1[3-9]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur'}
-  ],
-  verifyCode: [
-    {len: 6, message: '验证码长度应为6位', trigger: 'blur'}
-  ]
 }
 const fullPageInstance = ref(null);
 onMounted(() => {
@@ -346,28 +319,6 @@ const startCountdown = () => {
     }
   }, 1000);
 };
-const getCode = async () => {
-  phoneLoginFormRef.value.validateField('phoneNumber', async (valid) => {
-    if (valid) {
-      loading.value = true;
-      try {
-        // 模拟发送验证码的请求
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        ElNotification({
-          title: '成功',
-          message: '验证码已成功发送，请查收',
-          type: 'success',
-        })
-        startCountdown();
-      } catch (error) {
-        ElMessage.error('发送失败，请稍后重试');
-      } finally {
-        loading.value = false;
-      }
-    }
-  });
-};
-
 
 //activeIndex
 const activeIndex = ref('1');
