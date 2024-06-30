@@ -88,7 +88,6 @@ const accountLogin = () => {
   }, 6000)
   console.log(accountLoginForm.value)
   idLogin(accountLoginForm.value.account, accountLoginForm.value.password).then(res => {
-    // console.log(res)
     //登录成功
     if (res.data.statusCode === 200) {
       // 得到jwt 放入store中
@@ -98,9 +97,9 @@ const accountLogin = () => {
         //设置用户信息 到store中
         // 随机数
         const rNum = Math.floor(Math.random() * (6)) + 1
-        console.log($state)
         SET_USER(res.data.data.member);
         SET_AVATAR(`src/assets/avatar/avatar${rNum}.svg`)
+        // 看看用户信息
         console.log(res.data.data)
         SET_ROLES(res.data.data.roles)
         SET_PERMISSIONS(res.data.data.permissions)

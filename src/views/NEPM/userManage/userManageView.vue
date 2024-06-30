@@ -177,6 +177,11 @@ import {nextTick, onMounted, ref} from "vue";
 import {changeUserRoles, getAllUserInfo, getRoleInfo} from "@/api/NEPM/index.js";
 import {error, success} from "@/utils/user.js";
 import {useUserStore} from "@/stores/user.js";
+import {getUserInfo} from "@/api/login/index.js";
+import router from "@/router/index.js";
+import {ElNotification} from "element-plus";
+
+const {$state, SET_AVATAR, SET_JWT, SET_PERMISSIONS, SET_ROLES, SET_USER} = useUserStore()
 // 记录
 const record = ref()
 // 角色数组
@@ -314,6 +319,7 @@ function submit() {
   console.log(currentRow.value)
   changeUserRoles(currentRow.value.member.logid, rolesId.value).then(res => {
     if (res.data.statusCode === 200) {
+      fleshUserState()
       success('修改成功')
     } else {
       error(res.data.message)
@@ -362,4 +368,20 @@ const handleSelectChange = () => {
   selectVisible.value = false
   selectedValue.value = ''
 }
+
+
+// 成功返回的时候重新获取用户信息 达到刷新的目的
+function fleshUserState() {
+  getUserInfo().then(res => {
+    //设置用户信息 到store中
+    SET_USER(res.data.data.member);
+    // 看看用户信息
+    console.log(res.data.data)
+    SET_ROLES(res.data.data.roles)
+    SET_PERMISSIONS(res.data.data.permissions)
+    //路由跳转
+  }).catch(err => {
+  })
+}
+
 </script>

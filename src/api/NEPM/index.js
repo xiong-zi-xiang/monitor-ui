@@ -98,8 +98,22 @@ export function assignGrid(afId, logId) {
 }
 
 // 获取用户的权限信息
+export function getRolesPermission(roleId) {
+    return axiosInstance.get(baseURL + `/api/v1/permissions/role/${roleId}`, {})
+}
 
 // 获取权限树
-export function getPermission() {
+export function getPermissionTree() {
     return axiosInstance.get(baseURL + '/api/v1/permissions/tree', {})
 }
+
+// 新增角色权限
+export function addRolePermission(roleId, permission) {
+    return axiosInstance.post(baseURL + `/api/v1/permissions/${roleId}/add`, permission, {})
+}
+
+// 新增用户角色
+export function addRole(mname, nickName, enable, remark) {
+    return axiosInstance.post(baseURL + `/api/v1/roles`, {mname, nickName, enable, remark}, {})
+}
+
