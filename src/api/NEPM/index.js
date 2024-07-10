@@ -107,9 +107,9 @@ export function getPermissionTree() {
     return axiosInstance.get(baseURL + '/api/v1/permissions/tree', {})
 }
 
-// 新增角色权限
-export function addRolePermission(roleId, permission) {
-    return axiosInstance.post(baseURL + `/api/v1/permissions/${roleId}/add`, permission, {})
+// 修改角色权限
+export function updateRolePermission(roleId, permission) {
+    return axiosInstance.post(baseURL + `/api/v1/permissions/${roleId}/update`, permission, {})
 }
 
 // 新增用户角色
@@ -117,3 +117,90 @@ export function addRole(mname, nickName, enable, remark) {
     return axiosInstance.post(baseURL + `/api/v1/roles`, {mname, nickName, enable, remark}, {})
 }
 
+// 重置用户密码
+export function axiosResetUserPassword(logId) {
+    return axiosInstance.post(baseURL + '/api/v1/auth/pwd/reset', logId, {})
+}
+
+// 分条件查询统计数据
+export function selectStatistic(page, size,
+                                id, afId,
+                                provinceName, cityName, districtName, address,
+                                so2ValueMax, so2ValueMin, so2Ascending,
+                                coValueMax, coValueMin, coAscending,
+                                spmValueMax, spmValueMin, spmAscending,
+                                aqiMax, aqiMin, aqiAscending,
+                                confirmDatetime, gmId, fdTel) {
+    const params = {}
+    params.page = page
+    params.size = size
+    //
+    params.id = id
+    params.afId = afId
+    //
+    if (provinceName !== '' && provinceName !== null && provinceName !== undefined) {
+        params.provinceName = provinceName
+        params.cityName = cityName
+        params.districtName = districtName
+    }
+    if (address !== '' && address !== null && address !== undefined)
+        params.address = address
+    //
+    params.so2ValueMax = so2ValueMax
+    params.so2ValueMin = so2ValueMin
+    params.so2Ascending = so2Ascending
+    //
+    params.coValueMax = coValueMax
+    params.coValueMin = coValueMin
+    params.coAscending = coAscending
+    //
+    params.spmValueMax = spmValueMax
+    params.spmValueMin = spmValueMin
+    params.spmAscending = spmAscending
+    //
+    params.aqiMax = aqiMax
+    params.aqiMin = aqiMin
+    params.aqiAscending = aqiAscending
+    //
+    params.confirmDatetime = confirmDatetime
+    params.gmId = gmId
+    params.fdTel = fdTel
+    return axiosInstance.get(baseURL + '/api/v1/statistics/search', {
+        params: params
+    })
+}
+
+// 禁用用户
+export function disableUser(logId) {
+    return axiosInstance.put(baseURL + `/api/v1/members/disable/${logId}`)
+}
+
+//启用用户
+export function enableUser(logId) {
+    return axiosInstance.put(baseURL + `/api/v1/members/enable/${logId}`)
+}
+
+// 禁用角色
+export function enableAndDisableRole(roleId, enabled) {
+
+    return axiosInstance.put(baseURL + `/api/v1/roles/${roleId}/enabled`, {
+        roleId: Number(roleId)
+    }, {
+        params: {
+            enabled
+        }
+    })
+}
+
+// 编辑某角色信息
+export function changeRoleInfo(id, mname, nickName, enable, remark) {
+    // console.log(id)
+    return axiosInstance.put(baseURL + '/api/v1/roles', {id, mname, nickName, enable, remark})
+}
+
+
+// 统计模块
+
+// export function getAQILevelPercent() {
+//     return axiosInstance.get(baseURL + '/api/v1/statistics/aqi/percent', {})
+// }

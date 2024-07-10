@@ -134,7 +134,10 @@
                 detectAQILevel.textAQI === '' ? '未计算AQI' : detectAQILevel.textAQI
               }}</span>
             <el-tag id="tag" :color="detectAQILevel.colorAQI" size="large"></el-tag>
-            <el-button class="ml-4" type="primary" @click="compute">计算</el-button>
+            <el-button :disabled="!havePermission('get-aqi-by-pollutant')" :type="getType()" class="ml-4"
+                       @click="compute">
+              {{ havePermission('get-aqi-by-pollutant') ? "计算" : "禁止计算" }}
+            </el-button>
           </el-form-item>
           <el-form-item prop="remarks">
             <template #label>
@@ -144,11 +147,13 @@
                       type="textarea"></el-input>
           </el-form-item>
           <div class="flex justify-center">
-            <el-button class="" size="large" type="primary" @click="report">
+            <el-button :disabled="!havePermission('grid-staff-report-statistics')" :type="submitPermission().type"
+                       class="" size="large"
+                       @click="report">
               <template #icon>
                 <span class="icon-[material-symbols--upload]"></span>
               </template>
-              上报监测结果
+              {{ submitPermission().text }}
             </el-button>
           </div>
         </el-form>
@@ -161,10 +166,11 @@
 <script setup>
 
 import {onMounted, ref} from "vue";
-import {getAQILevel, getCurrentTask, isAvailable, reportInfo} from "@/api/NEPG/index.js";
+import {getAQILevel, getCurrentTask, reportInfo} from "@/api/NEPG/index.js";
 import {error, success} from "@/utils/user.js";
 import AQI2Text from "../../../../public/AQIText.js";
 import {closeLoadingFull, openFullLoading} from "../../../../public/Loading.js";
+import havePermission from "../../../../public/permisssion.js";
 
 
 const detectFormRef = ref(null)
@@ -260,29 +266,19 @@ const detectAQILevel = ref({
 
 onMounted(() => {
   let loading = openFullLoading()
-  isAvailable().then(res => {
+  getCurrentTask().then(res => {
     if (res.data.statusCode === 200) {
-      haveTask.value = !res.data.data
-      getCurrentTask().then(res => {
-        if (res.data.statusCode === 200) {
-          // 加上预估AQI字段
-          res.data.data['AQI'] = AQI2Text(res.data.data.estimatedGrade)
-          taskInfo.value = res.data.data
-        } else if (res.data.statusCode === 404) {
-          haveTask.value = false
-        }
-      }).catch(err => {
-        error(err)
-      })
-    } else {
-      error(res.data.message)
+      // 加上预估AQI字段
+      haveTask.value = res.data.data !== null;
+      res.data.data['AQI'] = AQI2Text(res.data.data.estimatedGrade)
+      taskInfo.value = res.data.data
+    } else if (res.data.statusCode === 404) {
+      haveTask.value = false
     }
-  }).catch(err => {
-    console.log(err)
-    error(err)
   }).finally(() => {
     closeLoadingFull(loading)
   })
+
 })
 // 计算AQI
 const compute = () => {
@@ -303,8 +299,6 @@ const compute = () => {
         } else {
           error(res.data.message)
         }
-      }).catch(err => {
-        error(err)
       }).finally(() => {
         closeLoadingFull(loading)
       })
@@ -321,11 +315,29 @@ const report = () => {
     } else {
       error(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   }).finally(() => {
     closeLoadingFull(loading)
   })
+}
+
+function getType() {
+  if (havePermission('get-aqi-by-pollutant'))
+    return 'primary'
+  else
+    return 'danger'
+}
+
+function submitPermission() {
+  if (havePermission('grid-staff-report-statistics'))
+    return {
+      text: '上报监测结果',
+      type: 'success',
+    }
+  else
+    return {
+      text: '禁止上报检测',
+      type: 'danger',
+    }
 }
 </script>
 

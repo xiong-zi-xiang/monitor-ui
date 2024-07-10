@@ -17,10 +17,9 @@ export function changePassword(newPassword, originPassword) {
     )
 }
 
-
 // 修改个人信息
 export function changeInfo(info) {
-    console.log(info)
+    // console.log(info)
     return axiosInstance.put(
         baseURL + '/api/v1/members',
         info,

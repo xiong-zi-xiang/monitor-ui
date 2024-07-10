@@ -74,7 +74,10 @@
         <el-tooltip :content="tips" effect="customized">
           <el-button size="large" @click="handleEdit">编辑资料</el-button>
         </el-tooltip>
-        <el-button size="large" type="primary" @click="handleSubmit">提交修改</el-button>
+        <el-button :disabled="updatePermission().disable" :type="updatePermission().type" size="large"
+                   @click="handleSubmit">
+          {{ updatePermission().text }}
+        </el-button>
       </div>
     </template>
   </el-card>
@@ -86,6 +89,7 @@ import {computed, ref} from "vue";
 import {useUserStore} from "@/stores/user.js";
 import {changeInfo} from "@/api/info/index.js";
 import {alertErr, alertSuccess, error, success} from "@/utils/user.js";
+import havePermission from "../../../public/permisssion.js";
 // 将存储在pinia中的角色信息展示
 const userStore = useUserStore()
 // 更改提示
@@ -139,9 +143,22 @@ const handleSubmit = () => {
     } else {
       alertErr(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   })
+}
+
+function updatePermission() {
+  if (havePermission('update-user-details'))
+    return {
+      text: '提交修改',
+      disable: false,
+      type: 'primary'
+    }
+  else
+    return {
+      text: '没有修改权限',
+      disable: true,
+      type: 'danger'
+    }
 }
 </script>
 

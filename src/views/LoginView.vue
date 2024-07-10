@@ -1,4 +1,5 @@
 <template>
+
   <div id="fullpage">
     <div class="section" style=";background-size: cover;height: 945px;">
       <el-card class="w-full" style="height: 945px;background-image: url('/bg1.svg')">
@@ -114,18 +115,17 @@
         </el-row>
       </el-card>
     </div>
-    <div class="section section2 "
-         style="display: block; background-image:url('/liquid-cheese.svg');background-size: cover ">
-      <div class="w-3/4 mx-auto mt-32 board  bg-white rounded-lg shadow-2xl"
-           style="height: 700px;border-radius: 14px;border: 1px #f8f8f8">
+    <div class="section"
+         style="display: block; background-image:url('/liquid-cheese.png');background-size: cover ">
+      <el-card class="w-3/4 mx-auto mt-32 board  rounded-lg shadow-2xl"
+               style="height: 700px;border-radius: 14px;border: 1px #f8f8f8">
         <el-row>
           <el-col :span="24">
             <el-avatar
+                :class="isDark? 'dark': 'white'"
                 :size="50"
                 class="ml-6 mt-6"
-                src="/logo.svg"
-                style="background-color: #fff"
-            />
+                src="/logo.svg"/>
             <span class="text-base font-semibold mb-4 align-middle ml-3">Neusoft 环保公众监督系统</span>
           </el-col>
         </el-row>
@@ -171,7 +171,7 @@
                 <el-button circle class="mr-3" size="large" style="background-color: #41b883">
                   <span class="icon-[ri--wechat-fill] size-7" style="color: white;"></span>
                 </el-button>
-                <el-button circle class="mr-3" size="large">
+                <el-button :class="isDark?'white':'white'" circle class="mr-3" size="large" style="">
                   <span class="icon-[logos--apple] size-7"></span>
                 </el-button>
                 <el-button circle class="mr-3" size="large">
@@ -190,7 +190,7 @@
           </el-col>
         </el-row>
 
-      </div>
+      </el-card>
     </div>
     <div class="section about">
       <el-card class="w-full" style="height: 900px">
@@ -276,8 +276,11 @@ import {useRouter} from 'vue-router'
 import {useUserStore} from "@/stores/user.js";
 import {Avatar} from "@element-plus/icons-vue";
 import {useNavStore} from "@/stores/nav.js";
+import {useDark} from "@vueuse/core";
+// loading插件
+import Loading from 'vue-loading-overlay';
 
-
+const isDark = useDark()
 const modules = ref([Pagination, Navigation])
 
 //verify code
@@ -297,10 +300,10 @@ const fullPageInstance = ref(null);
 onMounted(() => {
   fullPageInstance.value = new fullpage('#fullpage', {
     autoScrolling: true,
-    navigation: true,
     anchors: ['firstPage', 'secondPage', 'thirdPage'],
     licenseKey: 'gplv3-license'
   });
+
 });
 
 onBeforeUnmount(() => {
@@ -425,6 +428,13 @@ const activeIndex = ref('1');
   }
 }
 
+.dark {
+  background-color: #1d1e1f;
+}
+
+.white {
+  background-color: white;
+}
 </style>
 
 

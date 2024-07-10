@@ -73,9 +73,13 @@
         </el-table-column>
         <el-table-column fixed="right" label="修改状态">
           <template v-slot="{row}">
-            <el-button :disabled="operation(row.member.state).disabled" :type="operation(row.member.state).type"
-                       class="w-20" plain round @click="changeState(row.member.logid,row.member.state,row)">
-              {{ operation(row.member.state).text }}
+            <el-button v-if="havePermission('update-grid-status')" :disabled="operation(row.roleState).disabled"
+                       :type="operation(row.roleState).type" class="w-20" plain round
+                       @click="changeState(row.member.logid,row.roleState,row)">
+              {{ operation(row.roleState).text }}
+            </el-button>
+            <el-button v-else class="w-20" disabled plain round type="danger">
+              无权限，禁止修改
             </el-button>
           </template>
 
@@ -106,6 +110,7 @@ import {alertSuccess, error, success} from "@/utils/user.js";
 import {Icon} from '@iconify/vue';
 import {selectHistory} from "@/api/NEPS/index.js";
 import AQI2Text from "../../../../public/AQIText.js";
+import havePermission from "../../../../public/permisssion.js";
 // 记录
 const record = ref()
 const total = ref(0)
@@ -202,19 +207,17 @@ function operation(state) {
 function changeState(logId, state, row) {
   changeGridState(logId, state)
       .then(res => {
+        console.log(res)
         if (res.data.statusCode === 200) {
           // 说明处理成功
           if (state === 0)
-            row.member.state = 2
+            row.rolestate = 2
           if (state === 2)
-            row.member.state = 0
+            row.rolestate = 0
           alertSuccess('修改成功')
         } else {
-          error(res.data.message)
+          // error(res.data.message)
         }
-      })
-      .catch(err => {
-        error(err)
       })
 
 }
@@ -223,16 +226,15 @@ function changeState(logId, state, row) {
 function getSelectPage(page, size) {
   setTimeout(() => {
     searchGridInfo(page, size, selectForm.value.logId, selectForm.value.address, selectForm.value.afId, selectForm.value.roleState,).then(res => {
-      if (res.data.statusCode === 200) {
-        record.value = res.data.data.records
-        total.value = res.data.data.total
-        loading.value = false
-        console.log(record.value)
-      } else {
-        error(res.data.message)
-      }
-    }).catch(err => {
-      error(err)
+      if (res)
+        if (res.data.statusCode === 200) {
+          record.value = res.data.data.records
+          total.value = res.data.data.total
+          loading.value = false
+          console.log(record.value)
+        } else {
+          error(res.data.message)
+        }
     })
   }, 100)
 }

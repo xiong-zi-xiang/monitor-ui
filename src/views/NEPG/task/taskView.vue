@@ -8,6 +8,8 @@
     </template>
 
     <template #default>
+      <!--      消息通知-->
+      <!--      <flesh></flesh>-->
       <el-table v-loading="loading" :data="record" height="600" style="width: 100%">
         <el-table-column type="expand">
           <template #default="scope">
@@ -86,9 +88,11 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button :disabled="!available" :type="getType(scope.row.handle)" size="default"
+            <el-button :disabled="!available || !haveAssignPermission().value" :type="getType(scope.row.handle)"
+                       size="default"
                        @click="handleAccept(scope.row)">
-              {{ getText(scope.row.handle) }}
+              <span v-if="haveAssignPermission().value">{{ getText(scope.row.handle) }}</span>
+              <span v-else>无权限，禁止接受指派</span>
             </el-button>
           </template>
         </el-table-column>
@@ -110,6 +114,7 @@
 </template>
 
 <script setup>
+import flesh from '@/flesh.vue'
 import {onBeforeMount, onMounted, ref} from "vue";
 import {acceptAssign, getTask, isAvailable} from "@/api/NEPG/index.js";
 import AQI2Text from "../../../../public/AQIText.js";
@@ -117,13 +122,32 @@ import {alertSuccess, alertWarning, error, success} from "@/utils/user.js";
 import {selectHistory} from "@/api/NEPS/index.js";
 import {ElMessageBox} from "element-plus";
 import {closeLoadingFull, openFullLoading} from "../../../../public/Loading.js";
+import {useUserStore} from "@/stores/user.js";
+import havePermission from "../../../../public/permisssion.js";
 
+const userStore = useUserStore()
 const loading = ref(true)
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0)
 const record = ref()
 const available = ref()
+
+function haveAssignPermission() {
+
+  if (havePermission('grid-staff-assignment'))
+    return {
+      text: '',
+      value: true,
+    }
+  else {
+    return {
+      text: '',
+      value: false
+    }
+  }
+}
+
 onMounted(() => {
   setTimeout(() => {
     getFirstPage()
@@ -146,8 +170,6 @@ function handleCurrentChange(page) {
         record.value = res.data.data.records
         loading.value = false;
         total.value = res.data.data.total
-      }).catch(err => {
-        error(err)
       })
     } else {
       getFirstPage()
@@ -175,8 +197,6 @@ const handleAccept = (row) => {
           } else {
             error(res.data.message)
           }
-        }).catch(err => {
-          error(err)
         }).finally(() => {
           closeLoadingFull(loading)
         })
@@ -213,8 +233,6 @@ function getFirstPage() {
     } else {
       error(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   })
 
   // 拿到第一页
@@ -222,24 +240,26 @@ function getFirstPage() {
     console.log('available' + available.value)
     // 判断是不是在指派的状态
     if (available.value) {
-      res.data.data.records.forEach(item => {
-        item['AQI'] = AQI2Text(item.estimatedGrade)
-        item['handle'] = false
-      })
+      if (res.data.data.records.length !== 0) {
+        res.data.data.records.forEach(item => {
+          item['AQI'] = AQI2Text(item.estimatedGrade)
+          item['handle'] = false
+        })
+      }
     } else {
       // 在指派状态第一个会是handle
-      res.data.data.records.forEach(item => {
-        item['AQI'] = AQI2Text(item.estimatedGrade)
-        item['handle'] = false
-      })
-      res.data.data.records[0].handle = true //第一行为当前正在处理的委托
+      if (res.data.data.records.length !== 0) {
+        res.data.data.records.forEach(item => {
+          item['AQI'] = AQI2Text(item.estimatedGrade)
+          item['handle'] = false
+        })
+        res.data.data.records[0].handle = true //第一行为当前正在处理的委托
+      }
     }
     record.value = res.data.data.records
     console.log(record.value.AQI)
     loading.value = false
     total.value = res.data.data.total
-  }).catch(err => {
-    error(err)
   })
 }
 </script>

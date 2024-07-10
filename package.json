@@ -13,12 +13,16 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@iconify/vue": "^4.1.2",
+    "@vueuse/core": "^10.11.0",
+    "@vueuse/shared": "^10.11.0",
     "axios": "^1.7.2",
     "echarts": "^5.5.0",
     "element-china-area-data": "^6.1.0",
     "element-plus": "^2.7.5",
+    "event-source-polyfill": "^1.0.31",
     "fullpage.js": "^4.0.22",
     "mockjs": "^1.1.0",
+    "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "plus-pro-components": "^0.1.11",
@@ -26,6 +30,7 @@
     "swiper": "^11.1.4",
     "vue": "^3.4.21",
     "vue-fullpage.js": "^0.2.17",
+    "vue-loading-overlay": "^6.0.4",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

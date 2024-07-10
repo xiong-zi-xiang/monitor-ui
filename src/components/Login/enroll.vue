@@ -97,9 +97,6 @@ const getCode = async () => {
             type: 'success',
           })
         }
-      }).catch(err => {
-        console.log(err)
-        ElMessage.error('发送失败，请稍后重试');
       }).finally(
       )
       loading.value = false
@@ -137,17 +134,11 @@ const phoneEnroll = () => {
             }
           }
       )
-      .catch(err => {
-        ElNotification({
-          title: '错误',
-          message: err.data.message,
-          type: 'error',
-        })
-      }).finally(() => {
-    setTimeout(() => {
-      fullScreenLoading.value = false
-    }, 200)
-  })
+      .finally(() => {
+        setTimeout(() => {
+          fullScreenLoading.value = false
+        }, 200)
+      })
 }
 
 let allow = ref(false)

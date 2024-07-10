@@ -134,8 +134,6 @@ onMounted(() => {
       console.log("res.data.data")
       console.log(res.data.data)
       console.log(record.value)
-    }).catch(err => {
-      console.log(err)
     })
   }, 100)
 
@@ -162,8 +160,6 @@ function handleCurrentChange(page) {
       record.value = res.data.data.records
       loading.value = false;
       total.value = res.data.data.total
-    }).catch(err => {
-      console.log(err)
     })
   }, 100)
 }

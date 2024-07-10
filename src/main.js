@@ -12,7 +12,14 @@ import PlusProComponents from 'plus-pro-components'
 import 'plus-pro-components/index.css'
 import piniaPersist from 'pinia-plugin-persistedstate';
 import {useUserStore} from "@/stores/user.js";
-//引入Echarts
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import {close, start} from '@/utils/nprogress';
+// NProgress.configure({showSpinner: false, speed: 500});
+// 路由守卫配置
+// Import stylesheet
+// import 'vue-loading-overlay/vue-loading.css';
+// Import component
+// Init plugin
 
 // Vue.prototype.$echarts = echarts
 // 在开发环境中使用mock
@@ -34,6 +41,7 @@ const pinia = createPinia()
 pinia.use(piniaPersist)
 // 注册插件
 app.use(pinia)
+// app.use(Loading)
 app.use(ElementPlus)
 app.use(router)
 // 使用plus-pro-components
@@ -45,17 +53,12 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 const userStore = useUserStore()
 
-
-// 路由守卫配置
 router.beforeEach((to, from, next) => {
-    console.log("To___", to.name)
-    console.log("From___", from.name)
+    start();
     const isAuthenticated = userStore.jwt !== ''; // 判断是否有权限
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // 该路由需要鉴权
         if (!isAuthenticated) {
-            // 用户未登录，重定向到登录页面
-            console.log("未授权重定向")
             next('/login/passwordLogin');
         } else {
             // 用户已登录，
@@ -73,6 +76,10 @@ router.beforeEach((to, from, next) => {
             next()
         }
     }
+})
+
+router.afterEach(() => {
+    close();
 })
 //挂在到dom
 app.mount('#app')

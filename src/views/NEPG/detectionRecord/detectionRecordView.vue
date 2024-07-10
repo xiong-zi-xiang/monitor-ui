@@ -126,7 +126,7 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {getTask, selectHistory} from "@/api/NEPG/index.js";
+import {selectHistory} from "@/api/NEPG/index.js";
 import {error} from "@/utils/user.js";
 import AQI2Text from "../../../../public/AQIText.js";
 
@@ -155,8 +155,6 @@ async function getPage(page) {
     } else {
       error(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   })
 }
 

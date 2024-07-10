@@ -112,15 +112,6 @@ const accountLogin = () => {
           message: '登录成功',
           type: 'success',
         })
-      }).catch(err => {
-        ElNotification({
-          title: '错误',
-          message: err,
-          type: 'error',
-        })
-        setTimeout(() => {
-          fullscreenLoading.value = false
-        }, 200)
       })
     } else {
       ElNotification({
@@ -132,12 +123,6 @@ const accountLogin = () => {
         fullscreenLoading.value = false
       }, 200)
     }
-  }).catch(err => {
-    ElNotification({
-      title: '错误',
-      message: err.data.message,
-      type: 'error',
-    })
   })
 }
 </script>

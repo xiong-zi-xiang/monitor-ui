@@ -104,9 +104,6 @@ const getCode = async () => {
             type: 'success',
           })
         }
-      }).catch(err => {
-        console.log(err)
-        ElMessage.error('发送失败，请稍后重试');
       }).finally(
       )
       loading.value = false
@@ -146,12 +143,6 @@ const phoneLogin = () => {
                   message: '登录成功',
                   type: 'success',
                 })
-              }).catch(err => {
-                ElNotification({
-                  title: '错误',
-                  message: err,
-                  type: 'error',
-                })
               })
             } else {
               ElNotification({
@@ -165,16 +156,7 @@ const phoneLogin = () => {
             }
           }
       )
-      .catch(err => {
-        ElNotification({
-          title: '错误',
-          message: err.data.message,
-          type: 'error',
-        })
-        setTimeout(() => {
-          fullscreenLoading.value = false
-        }, 200)
-      })
+
 }
 const remember = ref(false)
 const rememberMe = () => {

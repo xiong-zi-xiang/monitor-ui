@@ -57,7 +57,7 @@
                   权限状态
                 </template>
                 <el-tag v-for="(item,index) in scope.row.permissions" :type="'success'"
-                        class="mr-2" size="large">
+                        class="mr-2 mt-2" size="large">
                   {{ item }}
                 </el-tag>
               </el-descriptions-item>
@@ -100,14 +100,48 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="用户角色" prop="member.gender" width="400">
+        <el-table-column label="用户角色" prop="member.gender" width="300">
           <template v-slot="{row}">
             <el-tag v-for="item in row.roles" :type="'success'" class="w-20 mr-2 mt-2" size="large" type="primary">
               {{ item.nickName }}
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column label="启用/禁用用户">
+          <template v-slot="{row}">
+            <el-switch
+                v-model="row.enable"
+                :disabled="!haveDisableAndEnablePermission(row.enable)"
+                class="ml-2"
+                style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                @click="changeState(row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="重置密码">
+          <template v-slot="{row}">
+            <el-button v-if="havePermission('reset-pwd')" plain round type="primary" @click="resetUserPassword(row)">
+              重置密码
+            </el-button>
+            <el-button v-else disabled plain round type="danger">无权重置密码</el-button>
+          </template>
+        </el-table-column>
       </el-table>
+      <el-dialog
+          v-model="dialogVisible"
+          title="提示"
+          width="500"
+      >
+        <span>确认要重置此用户密码吗</span>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="confirmResetPassword">
+              确认
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
     </template>
     <!--  分页栏-->
     <template #footer>
@@ -163,7 +197,9 @@
       <div class="flex justify-center">
         <div class="">
           <el-button size="default" @click="edit = !edit">编辑</el-button>
-          <el-button :type="'primary'" size="default" @click="submit">提交</el-button>
+          <el-button v-if="havePermission('update-user-role')" :type="'primary'" size="default" @click="submit">提交
+          </el-button>
+          <el-button v-else :type="'danger'" disabled size="default">无权编辑用户角色</el-button>
         </div>
       </div>
     </template>
@@ -174,12 +210,21 @@
 <script setup>
 
 import {nextTick, onMounted, ref} from "vue";
-import {changeUserRoles, getAllUserInfo, getRoleInfo} from "@/api/NEPM/index.js";
-import {error, success} from "@/utils/user.js";
+import {
+  axiosResetUserPassword,
+  changeUserRoles,
+  disableUser,
+  enableUser,
+  getAllUserInfo,
+  getRoleInfo
+} from "@/api/NEPM/index.js";
+import {alertErr, alertSuccess, error, success} from "@/utils/user.js";
 import {useUserStore} from "@/stores/user.js";
 import {getUserInfo} from "@/api/login/index.js";
 import router from "@/router/index.js";
 import {ElNotification} from "element-plus";
+import {closeLoadingFull, openFullLoading} from "../../../../public/Loading.js";
+import havePermission from "../../../../public/permisssion.js";
 
 const {$state, SET_AVATAR, SET_JWT, SET_PERMISSIONS, SET_ROLES, SET_USER} = useUserStore()
 // 记录
@@ -249,6 +294,10 @@ function getSelectPage(page, size) {
     if (res.data.statusCode === 200) {
       // 存储记录
       record.value = res.data.data.records
+      record.value.forEach(item => {
+        // item['enable'] = item.member.state === 1
+        item['enable'] = item.available === 1
+      })
       total.value = res.data.data.total
       loading.value = false
       console.log(record.value)
@@ -256,8 +305,6 @@ function getSelectPage(page, size) {
     } else {
       error(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   })
   // 获取角色表
   getRoleInfo().then(res => {
@@ -268,8 +315,6 @@ function getSelectPage(page, size) {
     } else {
       error(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   })
 }
 
@@ -324,8 +369,6 @@ function submit() {
     } else {
       error(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   })
 }
 
@@ -380,8 +423,85 @@ function fleshUserState() {
     SET_ROLES(res.data.data.roles)
     SET_PERMISSIONS(res.data.data.permissions)
     //路由跳转
-  }).catch(err => {
   })
 }
 
+const dialogVisible = ref(false)
+const userInfo = ref(null)
+
+//重置用户密码
+function resetUserPassword(row) {
+  dialogVisible.value = true
+  userInfo.value = row
+}
+
+function confirmResetPassword() {
+  dialogVisible.value = false
+  let loading = openFullLoading()
+  // 发送请求
+  axiosResetUserPassword(userInfo.value.member.logid).then(res => {
+    if (res.data.statusCode === 200) {
+      success('密码已被重置为123456')
+      // 如果是自己的话 那么密码要实时更新
+      console.log(userInfo.value.member)
+      if (userInfo.value.member.logid === userStore.user.logid) {
+        userStore.user.logpwd = '123456'
+      }
+    } else {
+      error(res.data.message)
+    }
+  }).finally(() => {
+        closeLoadingFull(loading)
+      }
+  )
+}
+
+function changeState(row) {
+  if (row.enable) {
+    enableUser(row.member.logid).then(res => {
+      if (res.data.statusCode === 200) {
+        alertSuccess('成功启用用户')
+        // row.member.state = 1
+        row.available = 1
+        // if (row.member.logid === userStore.user.logid) {
+        //   userStore.user.state = 1
+        // }
+      } else {
+        // 回滚
+        row.enable = !row.enable
+        alertErr('启用用户失败')
+      }
+    }).catch(err => {
+      // 回滚
+      row.enable = !row.enable
+    })
+  } else {
+    disableUser(row.member.logid).then(res => {
+      if (res.data.statusCode === 200) {
+        alertSuccess('成功禁用用户')
+        // row.member.state = 0
+        row.available = 0
+        // if (row.member.logid === userStore.user.logid) {
+        //   userStore.user.state = 0
+        // }
+      } else {
+        // 回滚
+        row.enable = !row.enable
+        alertErr('修改失败')
+      }
+    }).catch(err => {
+      row.enable = !row.enable
+    })
+  }
+  console.log(row.enable)
+}
+
+// 是否有禁用 启用用户的权限
+function haveDisableAndEnablePermission(enable) {
+  if (enable === 1) {
+    return havePermission('disable-user')
+  } else {
+    return havePermission('enable-user')
+  }
+}
 </script>

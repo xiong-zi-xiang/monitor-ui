@@ -67,9 +67,6 @@ export function logOut() {
     return axiosInstance.post(baseURL + '/api/v1/auth/logout', {}, {})
 }
 
-// 获取用户的权限列表
-export function getUserPermission() {
-    return axiosInstance.post(baseURL + '/api/v1/permissions/me', {}, {})
-}
+
 
 

@@ -2,6 +2,10 @@ import axios from "axios";
 //导入提示类
 import baseURL from "./backendAPI";
 import {useUserStore} from "@/stores/user.js";
+import {error} from "@/utils/user.js";
+import {useAQIStore} from "@/stores/AQI.js";
+import {useNavStore} from "@/stores/nav.js";
+import router from '@/router'
 //创建axios实例并配置
 const axiosInstance = axios.create({
     baseURL: baseURL,
@@ -15,18 +19,18 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     function (config) {
         // 在发送请求之前做些什么
-        console.log(config.url)
+        // console.log(config.url)
         // 对需要加token 不在白名单中的请求路径，加入token
         if (!isExcludedUrl(config.url)) {
-            console.log("加token")
+            // console.log("加token")
             const userStore = useUserStore()
-            console.log('jwt', userStore.jwt)
+            // console.log('jwt', userStore.jwt)
             if (userStore.jwt !== '') {
                 config.headers.Authorization = userStore.jwt
                 // console.log(config)
             }
         } else {
-            console.log("不加token")
+            // console.log("不加token")
         }
         return config
     },
@@ -36,17 +40,42 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-// // 添加响应拦截器
-// axiosInstance.interceptors.response.use(
-//     config=>{
-//         console.log('config item')
-//         return config
-//     },
-//     error => {
-//         console.log('请求错误',error)
-//         return Promise.reject(error)
-//     }
-// );
+// 添加响应拦截器
+axiosInstance.interceptors.response.use(
+    response => {
+        return response
+    },
+    errorLog => {
+        console.log(errorLog)
+        if (errorLog.code === 'ECONNABORTED') {
+            error('连接超时')
+        } else {
+            if (errorLog.response.data.statusCode === 401) {
+                error(errorLog.response.data.message)
+                return Promise.reject(errorLog)
+            }
+            if (errorLog.response.data.statusCode === 402) {
+                const userStore = useUserStore()
+                const AQIStore = useAQIStore()
+                const navStore = useNavStore()
+                error(errorLog.response.data.message)
+                // 清除pinia
+                userStore.$reset()
+                AQIStore.$reset()
+                navStore.$reset()
+                //
+                // window.location.replace('/login/passwordLogin#firstPage')
+                router.push('/login/passwordLogin#firstPage')
+                console.log(errorLog)
+                return Promise.reject(errorLog);
+            }
+        }
+    },
+    config => {
+        console.log('config item')
+        return config
+    },
+);
 
 
 // 这里列出不需要处理的 URL

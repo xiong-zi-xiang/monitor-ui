@@ -47,7 +47,6 @@
           <el-date-picker
               v-model="conditionForm.afDateStart"
               placeholder="反馈日期起"
-
           />
         </el-form-item>
         <el-form-item label="反馈日期止">
@@ -138,8 +137,12 @@
             <el-tag v-if="row.gmName !== null && row.gmName !== ''">
               {{ row.gmName }}
             </el-tag>
-            <el-button v-else plain round size="small" type="danger" @click="handleOpen(row)">
+            <el-button v-else-if="havePermission('assign-grid-staff')" plain round size="small" type="danger"
+                       @click="handleOpen(row)">
               指派网格员
+            </el-button>
+            <el-button v-else disabled plain round size="small" type="danger">
+              无权指派网格员
             </el-button>
           </template>
         </el-table-column>
@@ -250,6 +253,7 @@ import {assignGrid, getFeedbackInfo, searchGridInfo} from "@/api/NEPM/index.js";
 import {error, success} from "@/utils/user.js";
 import AQI2Text from "../../../../public/AQIText.js";
 import {pcaTextArr} from 'element-china-area-data'
+import havePermission from "../../../../public/permisssion.js";
 
 const record = ref()
 const total = ref(0)
@@ -349,8 +353,6 @@ function getSelectPage(page, size) {
       } else {
         error(res.data.message)
       }
-    }).catch(err => {
-      error(err)
     })
   }, 100)
 }
@@ -444,8 +446,6 @@ function getGridSelectPage(page, size) {
       } else {
         error(res.data.message)
       }
-    }).catch(err => {
-      error(err)
     })
   }, 100)
 }
@@ -480,8 +480,6 @@ function distribute(logId) {
     } else {
       error(res.data.message)
     }
-  }).catch(err => {
-    error(err)
   })
 }
 
@@ -491,8 +489,8 @@ function distribute(logId) {
 function select() {
   // 继续发送请求即可
   loading.value = true;
-  console.log("pca.value")
-  console.log(conditionForm.value.pca)
+  // console.log("pca.value")
+  // console.log(conditionForm.value.pca)
   if (conditionForm.value.pca !== undefined && conditionForm.value.pca !== null) {
     // 将pca的信息提取
     conditionForm.value.provinceName = conditionForm.value.pca[0]

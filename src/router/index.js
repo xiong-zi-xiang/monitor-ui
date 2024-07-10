@@ -19,6 +19,9 @@ import nepgManageView from '@/views/NEPM/nepgManage/nepgManageView.vue'
 import userManageView from "@/views/NEPM/userManage/userManageView.vue"
 import feedbackInfoView from "@/views/NEPM/feedbackInfo/feedbackInfoView.vue"
 import permissionView from '@/views/NEPM/permission/permisssionView.vue'
+import groupedStatisticView from '@/views/NEPM/statistic/groupedAQIExceededStatisticView.vue'
+import decisionView from '@/views/NEPM/statistic/decisionView.vue'
+import statisticInfoView from '@/views/NEPM/statistic/statisticInfo.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -120,6 +123,25 @@ const router = createRouter({
                     component: permissionView,
                     meta: {requiresAuth: true},
                 },
+                {
+                    path: '/groupedStatistic',
+                    name: 'groupedStatistic',
+                    component: groupedStatisticView,
+                    meta: {requiresAuth: true},
+                },
+                {
+                    path: '/statisticInfo',
+                    name: 'statisticInfo',
+                    component: statisticInfoView,
+                    meta: {requiresAuth: true},
+                },
+                {
+                    path: '/decision',
+                    name: 'decision',
+                    component: decisionView,
+                    meta: {requiresAuth: true},
+                },
+
             ]
         },
         {
