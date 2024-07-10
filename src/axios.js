@@ -1,14 +1,10 @@
 import axios from "axios";
 //导入提示类
-import baseURL from "./backendAPI";
 import {useUserStore} from "@/stores/user.js";
 import {error} from "@/utils/user.js";
-import {useAQIStore} from "@/stores/AQI.js";
-import {useNavStore} from "@/stores/nav.js";
-import router from '@/router'
 //创建axios实例并配置
 const axiosInstance = axios.create({
-    baseURL: baseURL,
+    // baseURL: baseURL,
     timeout: 5000, // 设置超时时间为5000毫秒（5秒）
     headers: {
         'Content-Type': 'application/json',
@@ -51,21 +47,24 @@ axiosInstance.interceptors.response.use(
             error('连接超时')
         } else {
             if (errorLog.response.data.statusCode === 401) {
-                error(errorLog.response.data.message)
+                // error(errorLog.response.data.message)
+                error('无权访问')
                 return Promise.reject(errorLog)
             }
             if (errorLog.response.data.statusCode === 402) {
-                const userStore = useUserStore()
-                const AQIStore = useAQIStore()
-                const navStore = useNavStore()
-                error(errorLog.response.data.message)
-                // 清除pinia
-                userStore.$reset()
-                AQIStore.$reset()
-                navStore.$reset()
-                //
-                // window.location.replace('/login/passwordLogin#firstPage')
-                router.push('/login/passwordLogin#firstPage')
+                // const userStore = useUserStore()
+                // const AQIStore = useAQIStore()
+                // const navStore = useNavStore()
+                // error('角色已改变 请重新登录')
+                // //关闭连接
+                // closeLogoutSSE(userStore.user.logid).then(() => {
+                //         // 清除pinia
+                //         userStore.$reset()
+                //         AQIStore.$reset()
+                //         navStore.$reset()
+                //         router.push('/login/passwordLogin#firstPage')
+                //     }
+                // )
                 console.log(errorLog)
                 return Promise.reject(errorLog);
             }

@@ -10,13 +10,14 @@ import {useUserStore} from "@/stores/user.js";
 import {useAQIStore} from "@/stores/AQI.js";
 import {useNavStore} from "@/stores/nav.js";
 import {alertSuccess} from "@/utils/user.js";
+import {closeLogoutSSE} from "@/api/info/index.js";
 
 const userStore = useUserStore()
 const AQIStore = useAQIStore()
 const navStore = useNavStore()
 
 function setupSSE() {
-  const eventSource = new EventSourcePolyfill('/api' + `/api/v1/notification/logout/connect?userId=${userStore.user.id}`, {
+  const eventSource = new EventSourcePolyfill('/api' + `/api/v1/notification/logout/connect?userId=${userStore.user.logid}`, {
     headers: {
       'Authorization': userStore.jwt,
     },
@@ -26,13 +27,17 @@ function setupSSE() {
   }
   eventSource.onmessage = (event) => {
     // 表明需要退出登录
-    alertSuccess(event)
-    // 清除pinia
-    userStore.$reset()
-    AQIStore.$reset()
-    navStore.$reset()
-    //
-    router.push('/login/passwordLogin#firstPage')
+    alertSuccess('角色权限已改变 请退出登录')
+    closeLogoutSSE(userStore.user.logid).then(() => {
+          // 清除pinia
+          userStore.$reset()
+          AQIStore.$reset()
+          navStore.$reset()
+          //
+          router.push('/login/passwordLogin#firstPage')
+          eventSource.close()
+        }
+    )
   }
   eventSource.onerror = (event) => {
     console.log(event)

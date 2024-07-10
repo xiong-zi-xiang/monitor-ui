@@ -30,3 +30,13 @@ export function changeInfo(info) {
         }
     )
 }
+
+//关闭反馈连接
+export function closeFeedbackSSE(logId) {
+    return axiosInstance.get('/api' + `/api/v1/notification/feedback/close?logId=${logId}`)
+}
+
+//关闭登出连接
+export function closeLogoutSSE(logId) {
+    return axiosInstance.get('/api' + `/api/v1/notification/logout/close?logId=${logId}`)
+}

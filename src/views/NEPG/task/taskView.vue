@@ -1,5 +1,4 @@
 <template>
-
   <el-card>
     <template #header>
       <div class="flex justify-center">
@@ -9,7 +8,7 @@
 
     <template #default>
       <!--      消息通知-->
-      <!--      <flesh></flesh>-->
+      <flesh v-if="havePermission('establish-feedback-sse-connect')" @notification="handleFlesh"></flesh>
       <el-table v-loading="loading" :data="record" height="600" style="width: 100%">
         <el-table-column type="expand">
           <template #default="scope">
@@ -115,7 +114,7 @@
 
 <script setup>
 import flesh from '@/flesh.vue'
-import {onBeforeMount, onMounted, ref} from "vue";
+import {onBeforeMount, onMounted, onUnmounted, ref} from "vue";
 import {acceptAssign, getTask, isAvailable} from "@/api/NEPG/index.js";
 import AQI2Text from "../../../../public/AQIText.js";
 import {alertSuccess, alertWarning, error, success} from "@/utils/user.js";
@@ -124,6 +123,8 @@ import {ElMessageBox} from "element-plus";
 import {closeLoadingFull, openFullLoading} from "../../../../public/Loading.js";
 import {useUserStore} from "@/stores/user.js";
 import havePermission from "../../../../public/permisssion.js";
+import {closeFeedbackSSE} from "@/api/info/index.js";
+// import flesh from '@/flesh.vue'
 
 const userStore = useUserStore()
 const loading = ref(true)
@@ -153,6 +154,15 @@ onMounted(() => {
     getFirstPage()
   }, 100)
 })
+onUnmounted(() => {
+  closeFeedbackSSE(userStore.user.logid)
+})
+
+//处理刷新
+function handleFlesh() {
+  console.log("sad")
+  getFirstPage()
+}
 
 // 处理分页
 //处理分页

@@ -86,13 +86,10 @@
         <el-col :span="24">
           <line-of-history></line-of-history>
         </el-col>
-        <!--        <el-col :span="12">-->
-        <!--          <china-map></china-map>-->
-        <!--        </el-col>-->
       </el-row>
       <el-row>
         <el-col :span="24">
-          <china-map></china-map>
+          <china-map v-if="show"></china-map>
         </el-col>
       </el-row>
       <!--      <div class="flex justify-center mt-16">-->
@@ -119,7 +116,7 @@ const userNumber = ref(0)
 const feedBackNumber = ref(0)
 const gridNumber = ref(0)
 const detectNumber = ref(0)
-
+const show = ref(false)
 const outputUserNumberValue = useTransition(userNumber, {
   duration: 1500,
 })
@@ -148,6 +145,12 @@ const mapData = [
   // 更多省市数据可以继续添加
 ];
 
+
+onMounted(() => {
+  setTimeout(() => {
+    show.value = true
+  }, 3000)
+})
 // onMounted(() => {
 //   if (chinaMap.value) {
 //     const myChart = echarts.init(chinaMap.value);
