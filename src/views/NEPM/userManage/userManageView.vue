@@ -81,8 +81,8 @@
         <el-table-column label="用户名" prop="member.mname"></el-table-column>
         <el-table-column label="性别" prop="member.gender" width="60">
           <template v-slot="{row}">
-            <el-tag :type="row.member.gender === '男'? 'primary':'danger'" class="w-8" size="large">
-              {{ row.member.gender }}
+            <el-tag :type="getType(row.member.gender)" class="w-8" size="large">
+              {{ row.member.gender !== null ? row.member.gender : "无" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -503,5 +503,11 @@ function haveDisableAndEnablePermission(enable) {
   } else {
     return havePermission('enable-user')
   }
+}
+
+function getType(gender) {
+  if (gender === null) {
+    return "info"
+  } else return gender === '男' ? 'primary' : 'danger'
 }
 </script>

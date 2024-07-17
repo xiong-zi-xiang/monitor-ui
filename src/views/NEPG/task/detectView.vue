@@ -167,7 +167,7 @@
 
 import {onMounted, ref} from "vue";
 import {getAQILevel, getCurrentTask, reportInfo} from "@/api/NEPG/index.js";
-import {error, success} from "@/utils/user.js";
+import {alertSuccess, error, success} from "@/utils/user.js";
 import AQI2Text from "../../../../public/AQIText.js";
 import {closeLoadingFull, openFullLoading} from "../../../../public/Loading.js";
 import havePermission from "../../../../public/permisssion.js";
@@ -310,7 +310,7 @@ const report = () => {
   let loading = openFullLoading()
   reportInfo(detectForm.value.so2, detectForm.value.co, detectForm.value.spm, detectForm.value.remarks).then(res => {
     if (res.data.statusCode === 200) {
-      success('成功上报')
+      alertSuccess('成功上报')
       haveTask.value = false
     } else {
       error(res.data.message)

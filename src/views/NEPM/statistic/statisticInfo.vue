@@ -39,7 +39,7 @@
           <el-input-number v-model="conditionForm.coValueMax" :max="120" :min="0" placeholder="到"/>
         </el-form-item>
         <el-form-item label="SPM范围">
-          <el-input-number v-model="conditionForm.spmValueMin" :max="120" :min="0" placeholder="从"/>
+          <el-input-number v-model="conditionForm.spmValueMin" :max="120" :min="0" class="w-28" placeholder="从"/>
           <span class="text-gray-500 ml-5 mr-5">--</span>
           <el-input-number v-model="conditionForm.spmValueMax" :max="120" :min="0" placeholder="到"/>
         </el-form-item>
@@ -269,7 +269,8 @@ const selectForm = ref({
 })
 // 级联选择器样式
 const props = {
-  expandTrigger: 'hover',
+  // expandTrigger: 'hover',
+  checkStrictly: true
 }
 // 挂载时
 onMounted(() => {
@@ -336,5 +337,9 @@ function select() {
 .round-tag {
   border: none;
   aspect-ratio: 1;
+}
+
+.el-input-number {
+  width: 7rem;
 }
 </style>

@@ -14,7 +14,8 @@ export default defineConfig({
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ''),
             }
-        }
+        },
+        port: 80
     },
     plugins: [
         vue(),

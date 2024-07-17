@@ -58,10 +58,6 @@
             <el-button v-else disabled plain round size="default" type="danger">
               无权更改角色权限
             </el-button>
-            <!--            <el-button plain round-->
-            <!--                       size="default" type="primary"-->
-            <!--                       @click="openDrawer(row.id)">更改角色权限-->
-            <!--            </el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -71,9 +67,6 @@
           size="30%"
           title="修改角色信息">
         <el-form label-width="150">
-          <!--          <el-form-item label="角色id">-->
-          <!--            <el-input-number v-model.number="roleInfoForm.id"></el-input-number>-->
-          <!--          </el-form-item>-->
           <el-form-item label="角色中文名称">
             <el-input v-model="roleInfoForm.mname" class="w-60" placeholder="请输入角色的中文名称"></el-input>
           </el-form-item>
@@ -350,7 +343,7 @@ const changeRolePermission = (roleId) => {
       if (res.data.statusCode === 200) {
         getUserInfo().then(res => {
           SET_PERMISSIONS(res.data.data.permissions)
-          success('成功添加修改对应角色的权限')
+          alertSuccess('成功添加修改对应角色的权限')
         })
       } else {
         error(res.data.message)
@@ -444,7 +437,7 @@ const addRoles = () => {
       addRole(addRoleForm.value.mname, addRoleForm.value.nickName, addRoleForm.value.enable, addRoleForm.value.remark).then(res => {
         if (res.data.statusCode === 200) {
           // 成功修改
-          success('成功添加角色')
+          alertSuccess('成功添加角色')
           // 再次拉取
           getRoleInfo().then(res => {
             if (res.data.statusCode === 200) {

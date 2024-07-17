@@ -59,12 +59,13 @@
         </el-form-item>
         <el-form-item label="出生日期:">
           <el-date-picker
-              v-model="userStore.user.birthday"
+              v-model="info.birthday"
               :disabled="!edit"
               class="w-50 ml-4"
               placeholder="选择出生日期"
               style="width: 100%"
               type="date"
+              @change="change"
           />
         </el-form-item>
       </el-form>
@@ -116,7 +117,7 @@ const info = ref({
   tel: userStore.user.tel,
   birthday: userStore.user.birthday,
 })
-
+const value1 = ref("")
 // 状态文字
 const stateText = computed(() => {
   switch (userStore.user.state) {
@@ -128,11 +129,20 @@ const stateText = computed(() => {
       return '未知状态';
   }
 });
-
+const handleChange = (date1, date2) => {
+  console.log(date1)
+  console.log(date2)
+}
+const change = (value) => {
+  console.log(value)
+  info.value.birthday = value
+}
 const handleSubmit = () => {
-
+  console.log(info.value)
+  console.log(info.value.birthday)
   changeInfo(info.value).then(res => {
     if (res.data.statusCode === 200) {
+      console.log(info.value.birthday)
       // 将值重新赋给store
       userStore.user.gender = info.value.gender
       userStore.user.mname = info.value.mname

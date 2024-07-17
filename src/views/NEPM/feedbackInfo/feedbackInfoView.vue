@@ -52,20 +52,20 @@
         <el-form-item label="反馈日期止">
           <el-date-picker
               v-model="conditionForm.afDateEnd"
-              placeholder="反馈日期起"
+              placeholder="反馈日期止"
               type="date"
           />
         </el-form-item>
         <el-form-item label="指派日期起">
           <el-date-picker
               v-model="conditionForm.assignDateStart"
-              placeholder="反馈日期起"
+              placeholder="指派日期起"
           />
         </el-form-item>
         <el-form-item label="指派日期止">
           <el-date-picker
               v-model="conditionForm.assignDateEnd"
-              placeholder="反馈日期起"
+              placeholder="指派日期止"
           />
         </el-form-item>
         <el-button :round=true class="mb-5" type="success" @click="select">
@@ -509,9 +509,10 @@ function select() {
 }
 
 // 级联选择器样式
-const props = {
-  expandTrigger: 'hover',
-}
+const props = ref({
+  // expandTrigger: 'hover',
+  checkStrictly: true,
+})
 </script>
 
 <style scoped>

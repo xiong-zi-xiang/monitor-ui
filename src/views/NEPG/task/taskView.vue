@@ -200,7 +200,7 @@ const handleAccept = (row) => {
         loading = openFullLoading()
         acceptAssign(row.afId, row.address, value).then(res => {
           if (res.data.statusCode === 200) {
-            success('成功接受委托,委托号为：' + row.afId)
+            alertSuccess('成功接受委托,委托号为：' + row.afId)
             // 更改显示状态
             available.value = false
             getFirstPage()
