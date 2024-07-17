@@ -3,7 +3,7 @@
     <template #header>
       <div class="flex justify-center">
         <div>
-          <span class="icon-[bi--grid-1x2-fill] size-5 mr-2 align-bottom" style="color: #009966;"/>
+          <span class="icon-[bi--grid-1x2-fill] size-5 mr-2 align-bottom" style="color: #009966;" />
           网格员管理
         </div>
       </div>
@@ -21,12 +21,7 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model.number="conditionForm.roleState" clearable placeholder="网格员状态" style="width: 240px">
-            <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-            />
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-button class="mb-5" type="success" @click="select">
@@ -37,13 +32,13 @@
         </el-button>
       </el-form>
       <el-table v-loading="loading" :data="record" height="600" stripe style="width: 100%; ">
-        <el-table-column label="账号" prop="member.logid"/>
-        <el-table-column label="姓名" prop="member.mname"/>
-        <el-table-column label="手机号" prop="member.tel" width="150"/>
-        <el-table-column label="性别" prop="member.gender"/>
+        <el-table-column label="账号" prop="member.logid" />
+        <el-table-column label="姓名" prop="member.mname" />
+        <el-table-column label="手机号" prop="member.tel" width="150" />
+        <el-table-column label="性别" prop="member.gender" />
         <el-table-column label="反馈id" prop="afId"></el-table-column>
         <el-table-column label="当前工作网格" width="320">
-          <template v-slot="{row}">
+          <template v-slot="{ row }">
             <el-tag v-if="isWorking(row.provinceName)" class="mr-2">{{ row.provinceName }}</el-tag>
             <el-tag v-if="isWorking(row.provinceName)" class="mr-2">{{ row.cityName }}</el-tag>
             <el-tag v-if="isWorking(row.provinceName)">{{ row.districtName }}</el-tag>
@@ -51,31 +46,31 @@
           </template>
         </el-table-column>
         <el-table-column label="详细地址">
-          <template v-slot="{row}">
+          <template v-slot="{ row }">
             <el-tag v-if="isWorking(row.provinceName)">{{ row.areaName }}</el-tag>
             <el-tag v-if="!isWorking(row.provinceName)" size="large" type="danger">当前未工作</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" width="200"></el-table-column>
-        <el-table-column label="状态" prop="member.state">
-          <template v-slot="{row}">
-            <el-tag :type="getTypeAndText(row.member.state).type" class="w-20" size="large">
-              {{ getTypeAndText(row.member.state).text }}
+        <el-table-column label="状态" prop="row.roleState">
+          <template v-slot="{ row }">
+            <el-tag :type="getTypeAndText(row.roleState).type" class="w-20" size="large">
+              {{ getTypeAndText(row.roleState).text }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="用户状态">
-          <template v-slot="{row}">
-            <el-tag :type="row.member.isNew === 1 ? 'danger':'success'" size="large">
+          <template v-slot="{ row }">
+            <el-tag :type="row.member.isNew === 1 ? 'danger' : 'success'" size="large">
               {{ row.member.isNew === 1 ? '新用户' : '老用户' }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="修改状态">
-          <template v-slot="{row}">
+          <template v-slot="{ row }">
             <el-button v-if="havePermission('update-grid-status')" :disabled="operation(row.roleState).disabled"
-                       :type="operation(row.roleState).type" class="w-20" plain round
-                       @click="changeState(row.member.logid,row.roleState,row)">
+              :type="operation(row.roleState).type" class="w-20" plain round
+              @click="changeState(row.member.logid, row.roleState, row)">
               {{ operation(row.roleState).text }}
             </el-button>
             <el-button v-else class="w-20" disabled plain round type="danger">
@@ -89,14 +84,8 @@
     <!--  分页栏-->
     <template #footer>
       <div class="flex justify-center">
-        <el-pagination
-            v-model:current-page="currentPage"
-            :page-size="pageSize"
-            :total="total"
-            background
-            layout="prev, pager, next, jumper"
-            @current-change="handleCurrentChange"
-        />
+        <el-pagination v-model:current-page="currentPage" :page-size="pageSize" :total="total" background
+          layout="prev, pager, next, jumper" @current-change="handleCurrentChange" />
       </div>
     </template>
   </el-card>
@@ -104,11 +93,11 @@
 
 <script setup>
 
-import {onMounted, ref} from "vue";
-import {changeGridState, searchGridInfo} from "@/api/NEPM/index.js";
-import {alertSuccess, error, success} from "@/utils/user.js";
-import {Icon} from '@iconify/vue';
-import {selectHistory} from "@/api/NEPS/index.js";
+import { onMounted, ref } from "vue";
+import { changeGridState, searchGridInfo } from "@/api/NEPM/index.js";
+import { alertSuccess, error, success } from "@/utils/user.js";
+import { Icon } from '@iconify/vue';
+import { selectHistory } from "@/api/NEPS/index.js";
 import AQI2Text from "../../../../public/AQIText.js";
 import havePermission from "../../../../public/permisssion.js";
 // 记录
@@ -205,20 +194,30 @@ function operation(state) {
 
 // 更改网格员状态
 function changeState(logId, state, row) {
+  // 0 空空闲 1 临时抽调 2 休假
+  switch (state) {
+    case 0:
+      state = 2
+      break;
+    case 2:
+      state = 0
+      break;
+  }
   changeGridState(logId, state)
-      .then(res => {
-        console.log(res)
-        if (res.data.statusCode === 200) {
-          // 说明处理成功
-          if (state === 0)
-            row.rolestate = 2
-          if (state === 2)
-            row.rolestate = 0
-          alertSuccess('修改成功')
-        } else {
-          // error(res.data.message)
-        }
-      })
+    .then(res => {
+      console.log(res)
+      if (res.data.statusCode === 200) {
+        // 说明处理成功
+        // if (state === 0)
+        //   row.rolestate = 2
+        // if (state === 2)
+        //   row.rolestate = 0
+        row.roleState = state
+        alertSuccess('修改成功')
+      } else {
+        // error(res.data.message)
+      }
+    })
 
 }
 
@@ -262,6 +261,4 @@ function select() {
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

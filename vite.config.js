@@ -3,7 +3,7 @@ import {fileURLToPath, URL} from 'node:url'
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 // import baseURL from '@/backendAPI.js'
-const baseURL = 'http://192.168.174.44:8002'
+const baseURL = 'http://localhost:8002'
 // https://vitejs.dev/config/
 export default defineConfig({
 // 配置跨域
