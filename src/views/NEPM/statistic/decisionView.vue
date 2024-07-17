@@ -3,7 +3,7 @@
     <template #header>
       <div class="justify-center flex">
         <div>
-          <span class="icon-[icon-park--map-draw] size-6 mr-2 align-bottom"/>
+          <span class="icon-[icon-park--map-draw] size-6 mr-2 align-bottom" />
           数据大屏
         </div>
       </div>
@@ -12,12 +12,11 @@
       <el-row :gutter="16" class="mb-12">
         <el-col :span="6">
           <el-statistic :value="outputUserNumberValue"
-                        :value-style="{ fontSize: '24px' ,textAlign:'center',marginLeft: '5px'}"
-                        title="用户总量">
+            :value-style="{ fontSize: '24px', textAlign: 'center', marginLeft: '5px' }" title="用户总量">
             <template #title>
               <div class="text-3xl" style="display: inline-flex; align-items: center">
                 <el-icon :size="18" style="margin-right: 10px">
-                  <span class="icon-[ph--user-light]"/>
+                  <span class="icon-[ph--user-light]" />
                 </el-icon>
                 <span class="text-lg">用户总量</span>
               </div>
@@ -29,12 +28,11 @@
         </el-col>
         <el-col :span="6">
           <el-statistic :value="outputFeedBackNumberValue"
-                        :value-style="{ fontSize: '24px',textAlign:'center',marginLeft: '15px' }"
-          >
+            :value-style="{ fontSize: '24px', textAlign: 'center', marginLeft: '15px' }">
             <template #title>
               <div class="text-3xl" style="display: inline-flex; align-items: center">
                 <el-icon :size="18" style="margin-right: 10px">
-                  <span class="icon-[material-symbols--feedback-outline]"/>
+                  <span class="icon-[material-symbols--feedback-outline]" />
                 </el-icon>
                 <span class="text-lg">反馈信息总数</span>
               </div>
@@ -43,12 +41,11 @@
         </el-col>
         <el-col :span="6">
           <el-statistic :value="outputGridNumberValue"
-                        :value-style="{ fontSize: '24px',textAlign:'center',marginLeft: '15px' }"
-          >
+            :value-style="{ fontSize: '24px', textAlign: 'center', marginLeft: '15px' }">
             <template #title>
               <div class="text-3xl" style="display: inline-flex; align-items: center">
                 <el-icon :size="13" style="margin-right: 10px">
-                  <span class="icon-[material-symbols--grid-4x4]"/>
+                  <span class="icon-[material-symbols--grid-4x4]" />
                 </el-icon>
                 <span class="text-lg">当前活跃网格数</span>
               </div>
@@ -57,12 +54,11 @@
         </el-col>
         <el-col :span="6">
           <el-statistic :value="outputDetectNumberValue"
-                        :value-style="{ fontSize: '24px',textAlign:'center',marginLeft: '15px' }"
-          >
+            :value-style="{ fontSize: '24px', textAlign: 'center', marginLeft: '15px' }">
             <template #title>
               <div class="text-3xl" style="display: inline-flex; align-items: center">
                 <el-icon :size="18" style="margin-right: 10px">
-                  <span class="icon-[hugeicons--test-tube-01]"/>
+                  <span class="icon-[hugeicons--test-tube-01]" />
                 </el-icon>
                 <span class="text-lg">今日检测网格数</span>
               </div>
@@ -105,12 +101,13 @@ import NightingaleChartOfAQI from '@/components/EChart/NightingaleChartOfAQI.vue
 import ChinaMap from "@/components/EChart/chinaMap.vue";
 import lineOfHistory from '@/components/EChart/lineOfHistory.vue'
 import AQIBar from '@/components/EChart/AQIBar.vue'
-import {ref, onMounted} from 'vue';
-import {getCityPositionByName} from '@/assets/cityPosition.js'
+import { ref, onMounted } from 'vue';
+import { getCityPositionByName } from '@/assets/cityPosition.js'
 
 // import '@/assets/china.js'
-import {useTransition} from "@vueuse/core";
+import { useTransition } from "@vueuse/core";
 import LineOfHistory from "@/components/EChart/lineOfHistory.vue";
+import havePermission from '../../../../public/permisssion';
 // 统计数据value
 const userNumber = ref(0)
 const feedBackNumber = ref(0)
@@ -139,9 +136,9 @@ detectNumber.value = 132
 const chinaMap = ref(null);
 
 const mapData = [
-  {name: '北京', value: Math.random() * 1000},
-  {name: '天津', value: Math.random() * 1000},
-  {name: '上海', value: Math.random() * 1000},
+  { name: '北京', value: Math.random() * 1000 },
+  { name: '天津', value: Math.random() * 1000 },
+  { name: '上海', value: Math.random() * 1000 },
   // 更多省市数据可以继续添加
 ];
 
@@ -205,6 +202,4 @@ onMounted(() => {
 // });
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

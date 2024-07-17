@@ -3,14 +3,15 @@
 </template>
 
 <script setup>
-import {EventSourcePolyfill} from "event-source-polyfill";
-import {onMounted} from "vue";
+import { EventSourcePolyfill } from "event-source-polyfill";
+import { onMounted } from "vue";
 import router from "@/router/index.js";
-import {useUserStore} from "@/stores/user.js";
-import {useAQIStore} from "@/stores/AQI.js";
-import {useNavStore} from "@/stores/nav.js";
-import {alertSuccess} from "@/utils/user.js";
-import {closeLogoutSSE} from "@/api/info/index.js";
+import { useUserStore } from "@/stores/user.js";
+import { useAQIStore } from "@/stores/AQI.js";
+import { useNavStore } from "@/stores/nav.js";
+import { alertSuccess } from "@/utils/user.js";
+import { closeLogoutSSE } from "@/api/info/index.js";
+import { logOut } from "./api/login";
 
 const userStore = useUserStore()
 const AQIStore = useAQIStore()
@@ -26,18 +27,20 @@ function setupSSE() {
     console.log(event)
   }
   eventSource.onmessage = (event) => {
-    // 表明需要退出登录
-    alertSuccess('角色权限已改变 请退出登录')
-    closeLogoutSSE(userStore.user.logid).then(() => {
-          // 清除pinia
-          userStore.$reset()
-          AQIStore.$reset()
-          navStore.$reset()
-          //
-          router.push('/login/passwordLogin#firstPage')
-          eventSource.close()
-        }
-    )
+    if (event.data.includes('下线' || '退出')) {
+      // 表明需要退出登录
+      alertSuccess(event.data)
+      closeLogoutSSE(userStore.user.logid).then(() => {
+        // 清除pinia
+        userStore.$reset()
+        AQIStore.$reset()
+        navStore.$reset()
+        //
+        router.push('/login/passwordLogin#firstPage')
+        eventSource.close()
+      }
+      )
+    }
   }
   eventSource.onerror = (event) => {
     console.log(event)
@@ -50,6 +53,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
